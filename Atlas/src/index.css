@@ -7,16 +7,21 @@
 
 :root {
   --black-gradient: linear-gradient(
-    144.39deg,
-    #ffffff -278.56%,
-    #6d6d6d -78.47%,
-    #11101d 91.61%
+    to top right,
+    #11101d 0%,
+    #19122E 100%
   );
-  --card-shadow: 0px 20px 100px -10px rgba(66, 71, 91, 0.1);
+  --card-shadow: 10px 10px 100px -10px rgba(66, 71, 91, 0.1);
 }
 
 * {
   scroll-behavior: smooth;
+}
+
+.app {
+  min-height: 100vh; /* This ensures the gradient covers the full height of the viewport */
+  background: var(--black-gradient);
+  color: white; /* Optional: Set text color to white for better visibility on dark background */
 }
 
 .text-gradient {
