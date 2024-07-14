@@ -2,10 +2,10 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './pages/**/*.{js,jsx,ts,tsx}',
+    './components/**/*.{js,jsx,ts,tsx}',
+    './app/**/*.{js,jsx,ts,tsx}',
+    './src/**/*.{js,jsx,ts,tsx}',
     './@/**/*.{ts,tsx}', // <- HERE
   ],
   prefix: "",
@@ -23,6 +23,7 @@ module.exports = {
         display: ['Bebas Neue', 'sans-serif'],
       },
       colors: {
+        accent2: '#594D93',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -56,6 +57,9 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        boxShadow: {
+          'inner-lg': 'inset 10px 5px 0 10px rgb(0 0 0 / 1.0)'
+        }
       },
       borderRadius: {
         lg: "30px",

@@ -35,17 +35,20 @@ const SignUp = () => {
    return (
       <div className="flex center flex-col">
          {/* Logo */}
-         <div className="flex items-center justify-center gap-2 p-3">
-            <img src="/AtlasW.png" alt="Atlas Logo" className="w-10 h-10" />
-            <h2 className="mfont1">ATLAS</h2>
+         <div className="flex items-center justify-center gap-2 pb-6">
+            <div className="">
+               <img src="/AtlasW.png" alt="Atlas Logo" className="w-16 h-16" />
+            </div>
+            <h2 className="mfont0">ATLAS</h2>
          </div>
          {/* Form */}
-         <Card className="rounded-md flex items-center justify-center p-10 light ">
+         <Card className="rounded-md items-center justify-center light p-0 inner-shadow">
             <CardContent>
-               <div>
-                  <div>
-                     <h1 className="mfont2">Sign Up</h1>
-                     <p className="mfont4">
+               <div className=" w-64">
+                  {/* Text */}
+                  <div className="">
+                     <h1 className="mfont2 pt-8">Sign Up</h1>
+                     <p className="mfont4 pt-1">
                         Already have an account?{" "}
                         <a
                            href="/login"
@@ -55,7 +58,10 @@ const SignUp = () => {
                         </a>
                      </p>
                   </div>
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+                  <form
+                     onSubmit={handleSubmit(onSubmit)}
+                     className="space-y-2 mt-4"
+                  >
                      {/* Name */}
                      <div>
                         <text className="mfont4">Name</text>
@@ -116,10 +122,10 @@ const SignUp = () => {
                      </div>
 
                      {/* Submit Button */}
-                     <div className="">
+                     <div className="pb-1 pt-5">
                         <Button
                            type="submit"
-                           className="rounded-sm accent items-center justify-center w-full"
+                           className="rounded-sm accent items-center justify-center w-full hover:bg-accent2 "
                         >
                            Sign Up
                         </Button>

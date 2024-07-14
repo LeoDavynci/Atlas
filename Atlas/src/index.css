@@ -39,13 +39,15 @@
   height: 100vh; /* This makes the div take the full height of the viewport */
 }
 
-.gap-10 {
-  gap: 10px;
-}
+
 
 
 .customborder {
   @apply border-black border-2 text-black focus:ring-black rounded-sm;
+}
+
+.inner-shadow {
+  box-shadow: inset -5px -5px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 
@@ -60,9 +62,18 @@
 .accent {
   background-color: #685AAB;
 }
+.accent {
+  background-color: #685AAB;
+}
 
 /* Mobile Font */
 
+.mfont0 {
+  font-family: "Bebas Neue";
+  font-size: 64px;
+  line-height: 40px;
+  color: #F4F4F4;
+}
 .mfont1 {
   font-family: "Bebas Neue";
   font-size: 48px;
