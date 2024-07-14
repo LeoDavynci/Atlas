@@ -1,18 +1,12 @@
+import { UserAuth } from "./context/AuthContext"
+import NonUserRoutes from "./routes/NonUserRoutes";
+import UserRoutes from "./routes/UserRoutes";
 
 
 function App() {
+  const { isLoggedOut } = UserAuth();
 
-  return (
-    <>
-      <div className='appGradient w-full overflow-hidden'>
-        <div className="bg-gray-600 w-1/2">
-          <p>
-            hello
-          </p>
-        </div>
-      </div>
-    </>
-  )
+  return <div>{isLoggedOut ? <NonUserRoutes /> : <UserRoutes />} </div>
 }
 
 export default App
