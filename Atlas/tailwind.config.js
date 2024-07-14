@@ -23,7 +23,14 @@ module.exports = {
         display: ['Bebas Neue', 'sans-serif'],
       },
       colors: {
-        accent2: '#594D93',
+        custom: {
+          dark: '#231943',
+          light: '#F4F4F4',
+          accent: '#685AAB',
+          accent2: '#594D93',
+        },
+   
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
