@@ -1,7 +1,19 @@
+import HomePage from "@/pages/HomePage";
+import SessionPage from "@/pages/SessionPage";
+import WorkoutsPage from "@/pages/WorkoutsPage";
 import React from "react";
+import { Route, Routes } from "react-router-dom";
 
 const UserRoutes = () => {
-   return <div>UserRoutes</div>;
+   return (
+      <div>
+         <Routes>
+            <Route path="/dashboard" element={<HomePage />}></Route>
+            <Route path="/workouts" element={<WorkoutsPage />}></Route>
+            <Route path="/session" element={<SessionPage />}></Route>
+         </Routes>
+      </div>
+   );
 };
 
 export default UserRoutes;
