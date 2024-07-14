@@ -24,7 +24,7 @@
   scroll-behavior: smooth;
 }
 
-.appGradient {
+.rootbg {
   min-height: 100vh; /* This ensures the gradient covers the full height of the viewport */
   background: var(--black-gradient);
   color: white; /* Optional: Set text color to white for better visibility on dark background */
