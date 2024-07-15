@@ -22,15 +22,15 @@ export const logout = async () => {
     }
 };
   
-export const signUp = async (username, name, email, password, userData) => {
-    try {
-      const user = await createUserWithEmailAndPassword(auth, username, name, email, password);
-      await setDoc(doc(db, "users", user.user.uid), {
-        ...userData,
-        uid: user.user.uid,
-      });
-      return user.user;
-    } catch (error) {
-      return error;
-    }
-  };
+export const signUp = async (email, password, userData) => {
+  try {
+    const user = await createUserWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(db, "users", user.user.uid), {
+      ...userData,
+      uid: user.user.uid,
+    });
+    return user.user;
+  } catch (error) {
+    return error;
+  }
+};

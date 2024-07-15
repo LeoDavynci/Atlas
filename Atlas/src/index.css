@@ -40,7 +40,9 @@
 }
 
 
-
+.accentbutton {
+  @apply bg-custom-accent text-custom-light hover:bg-custom-accent2
+}
 
 .customborder {
   @apply border-black border-2 text-black focus:ring-black rounded-sm;
