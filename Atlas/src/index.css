@@ -52,6 +52,10 @@
   box-shadow: inset -5px -5px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
+.box30 {
+  @apply w-[30px] h-[30px]
+}
+
 
 /* Theme Colors */
 
@@ -87,6 +91,12 @@
   font-size: 36px;
   line-height: 30px;
   color: #000000;
+}
+.mfont25 {
+  font-family: "Bebas Neue";
+  font-size: 36px;
+  line-height: 30px;
+  color: #F4F4F4;
 }
 .mfont3 {
   font-family: "Bebas Neue";

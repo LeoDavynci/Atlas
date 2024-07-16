@@ -71,7 +71,8 @@ module.exports = {
       borderRadius: {
         lg: "30px",
         md: "20px",
-        sm: "5px",
+        sm: "10px",
+        xs: "5px"
       },
       keyframes: {
         "accordion-down": {
