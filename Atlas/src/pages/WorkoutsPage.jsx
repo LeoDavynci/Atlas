@@ -6,7 +6,7 @@ import { IoIosSearch } from "react-icons/io";
 const WorkoutsPage = () => {
    return (
       <>
-         <div className="testgreen p-6 h-screen">
+         <div className=" p-6 h-full">
             <div>
                <h1 className="mfont1">WORKOUT</h1>
             </div>
@@ -25,12 +25,99 @@ const WorkoutsPage = () => {
             </div>
             <div className="mt-4">
                {/* Each One */}
-               <div className="flex-col w-full h-40 light rounded-md mt-4 p-4">
+               <div className="flex-col w-full h-40 light rounded-md mt-4 p-3 pt-4">
                   <div>
                      <h1 className="mfont2">Push</h1>
                   </div>
+                  <div className="mt-2 ">
+                     <h1 className="mfont45">
+                        Benchpress, cable flies, tricep extensions, tricep
+                        pushdowns, cable raises, incline dumb..
+                     </h1>
+                  </div>
+                  <div className="mt-2 flex gap-2">
+                     <Button className="graybutton w-1/3 mfont3">Edit</Button>
+                     <Button className="accentbutton w-2/3 mfont35">
+                        Begin Workout
+                     </Button>
+                  </div>
                </div>
-               <div className="w-full h-40 light rounded-lg mt-4"></div>
+
+               {/* Each One */}
+               <div className="flex-col w-full h-40 light rounded-md mt-4 p-3 pt-4">
+                  <div>
+                     <h1 className="mfont2">Push</h1>
+                  </div>
+                  <div className="mt-2 ">
+                     <h1 className="mfont45">
+                        Benchpress, cable flies, tricep extensions, tricep
+                        pushdowns, cable raises, incline dumb..
+                     </h1>
+                  </div>
+                  <div className="mt-2 flex gap-2">
+                     <Button className="graybutton w-1/3 mfont3">Edit</Button>
+                     <Button className="accentbutton w-2/3 mfont35">
+                        Begin Workout
+                     </Button>
+                  </div>
+               </div>
+
+               {/* Each One */}
+               <div className="flex-col w-full h-40 light rounded-md mt-4 p-3 pt-4">
+                  <div>
+                     <h1 className="mfont2">Push</h1>
+                  </div>
+                  <div className="mt-2 ">
+                     <h1 className="mfont45">
+                        Benchpress, cable flies, tricep extensions, tricep
+                        pushdowns, cable raises, incline dumb..
+                     </h1>
+                  </div>
+                  <div className="mt-2 flex gap-2">
+                     <Button className="graybutton w-1/3 mfont3">Edit</Button>
+                     <Button className="accentbutton w-2/3 mfont35">
+                        Begin Workout
+                     </Button>
+                  </div>
+               </div>
+
+               {/* Each One */}
+               <div className="flex-col w-full h-40 light rounded-md mt-4 p-3 pt-4">
+                  <div>
+                     <h1 className="mfont2">Push</h1>
+                  </div>
+                  <div className="mt-2 ">
+                     <h1 className="mfont45">
+                        Benchpress, cable flies, tricep extensions, tricep
+                        pushdowns, cable raises, incline dumb..
+                     </h1>
+                  </div>
+                  <div className="mt-2 flex gap-2">
+                     <Button className="graybutton w-1/3 mfont3">Edit</Button>
+                     <Button className="accentbutton w-2/3 mfont35">
+                        Begin Workout
+                     </Button>
+                  </div>
+               </div>
+
+               {/* Each One */}
+               <div className="flex-col w-full h-40 lightbox mt-4 p-3 pt-4">
+                  <div>
+                     <h1 className="mfont2">Push</h1>
+                  </div>
+                  <div className="mt-2 ">
+                     <h1 className="mfont45">
+                        Benchpress, cable flies, tricep extensions, tricep
+                        pushdowns, cable raises, incline dumb..
+                     </h1>
+                  </div>
+                  <div className="mt-2 flex gap-2">
+                     <Button className="graybutton w-1/3 mfont3">Edit</Button>
+                     <Button className="accentbutton w-2/3 mfont35">
+                        Begin Workout
+                     </Button>
+                  </div>
+               </div>
             </div>
          </div>
       </>

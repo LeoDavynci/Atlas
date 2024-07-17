@@ -26,6 +26,8 @@ module.exports = {
         custom: {
           dark: '#231943',
           light: '#F4F4F4',
+          light2: '#D9D9D9',
+          light3: '#BCBCBC',
           accent: '#685AAB',
           accent2: '#594D93',
         },

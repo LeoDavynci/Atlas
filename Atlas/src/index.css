@@ -41,7 +41,23 @@
 
 
 .accentbutton {
-  @apply bg-custom-accent text-custom-light hover:bg-custom-accent2
+  @apply bg-custom-accent text-custom-light hover:bg-custom-accent2 rounded-sm 
+}
+.lightbutton {
+  @apply bg-custom-light text-black hover:bg-custom-light2 rounded-md
+}
+.graybutton {
+  @apply bg-custom-light2 text-black hover:bg-custom-light3 rounded-sm
+}
+
+.accentbox {
+  @apply bg-custom-accent text-custom-light hover:bg-custom-accent2 rounded-sm 
+}
+.lightbox {
+  @apply bg-custom-light text-black hover:bg-custom-light2 rounded-md
+}
+.graybox {
+  @apply bg-custom-light2 text-black hover:bg-custom-light3 rounded-sm
 }
 
 .customborder {
@@ -100,15 +116,27 @@
 }
 .mfont3 {
   font-family: "Bebas Neue";
-  font-size: 15px;
+  font-size: 16px;
   line-height: 15px;
   color: #000000;
 }
+.mfont35 {
+  font-family: "Bebas Neue";
+  font-size: 16px;
+  line-height: 15px;
+  color: #F4F4F4;
+}
 .mfont4 {
   font-family: "Red Hat Text";
-  font-size: 15px;
+  font-size: 16px;
   line-height: 15px;
   color: #000000;
+}
+.mfont45 {
+  font-family: "Red Hat Text";
+  font-size: 16px;
+  line-height: 15px;
+  color: #6d6d6d;
 }
 
 /* Desktop Font */
