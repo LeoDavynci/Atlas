@@ -1,5 +1,5 @@
 import LandingPage from "@/pages/LandingPage";
-import Login from "@/pages/Login";
+import Login from "@/pages/AuthPage/Login";
 import SignUp from "@/pages/SignUp";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
