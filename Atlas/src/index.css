@@ -39,7 +39,7 @@
   height: 100vh; /* This makes the div take the full height of the viewport */
 }
 
-
+/* Buttons */
 .accentbutton {
   @apply bg-custom-accent text-custom-light hover:bg-custom-accent2 rounded-sm 
 }
@@ -50,14 +50,18 @@
   @apply bg-custom-light2 text-black hover:bg-custom-light3 rounded-sm
 }
 
+/* Divs */
 .accentbox {
-  @apply bg-custom-accent text-custom-light hover:bg-custom-accent2 rounded-sm 
+  @apply bg-custom-accent text-custom-light  rounded-sm 
+}
+.accentbox2 {
+  @apply bg-custom-accent text-custom-light rounded-full 
 }
 .lightbox {
-  @apply bg-custom-light text-black hover:bg-custom-light2 rounded-md
+  @apply bg-custom-light text-black  rounded-md
 }
 .graybox {
-  @apply bg-custom-light2 text-black hover:bg-custom-light3 rounded-sm
+  @apply bg-custom-light2 text-black  rounded-sm
 }
 
 .customborder {
@@ -66,6 +70,10 @@
 
 .inner-shadow {
   box-shadow: inset -5px -5px 20px 0 rgba(0, 0, 0, 0.5);
+}
+
+.outer-shadow {
+  box-shadow: 10px 10px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 .box30 {
@@ -114,6 +122,12 @@
   line-height: 30px;
   color: #F4F4F4;
 }
+.mfont29 {
+  font-family: "Bebas Neue";
+  font-size: 24px;
+  line-height: 30px;
+  color: #000000;
+}
 .mfont3 {
   font-family: "Bebas Neue";
   font-size: 16px;
@@ -126,6 +140,18 @@
   line-height: 15px;
   color: #F4F4F4;
 }
+.mfont37 {
+  font-family: "Bebas Neue";
+  font-size: 16px;
+  line-height: 15px;
+  color: #685AAB;
+}
+.mfont39 {
+  font-family: "Bebas Neue";
+  font-size: 16px;
+  line-height: 15px;
+  color: #6d6d6d;
+}
 .mfont4 {
   font-family: "Red Hat Text";
   font-size: 16px;
@@ -133,6 +159,12 @@
   color: #000000;
 }
 .mfont45 {
+  font-family: "Red Hat Text";
+  font-size: 16px;
+  line-height: 15px;
+  color: #F4F4F4;
+}
+.mfont49 {
   font-family: "Red Hat Text";
   font-size: 16px;
   line-height: 15px;

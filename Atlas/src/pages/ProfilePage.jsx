@@ -146,7 +146,7 @@ const ProfilePage = () => {
                {/* Each One */}
                <div className="flex-col w-full h-68 light rounded-md mt-4 p-3 pt-4">
                   <div className="mfont2">PUSH</div>
-                  <div className="mfont45 mt-1 ">21 hours ago</div>
+                  <div className="mfont49 mt-1 ">21 hours ago</div>
                   {/* stats */}
                   <div className="flex flex-row justify-between mfont4 pt-2 w-9/12">
                      <div className="flex flex-col gap-1">
