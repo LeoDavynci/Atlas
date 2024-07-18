@@ -5,7 +5,8 @@ import {
     getDoc,
     getDocs,
     onSnapshot,
-    setDoc,
+  setDoc,
+  updateDoc,
 } from "firebase/firestore"
 import { db } from "@/firebase/firebase"
 
@@ -49,18 +50,15 @@ export const readData = async (collection, id) => {
     }
 };
   
-export const updateData = async (collection, id, data) => {
-    try {
-      const docRef = doc(db, collection, id);
-      await updateDoc(docRef, {
-        id: id,
-        ...data,
-      });
-  
+export const updateData = async (collectionName, id, data) => {
+  try {
+      const docRef = doc(db, collectionName, id);
+      await updateDoc(docRef, data);
       console.log("Document successfully updated!");
-    } catch (error) {
+  } catch (error) {
       console.error("Error updating document: ", error.message);
-    }
+      throw error; // Rethrow the error so it can be caught in the component
+  }
 };
   
 export const deleteData = async (collection, id) => {
