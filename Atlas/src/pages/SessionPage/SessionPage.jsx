@@ -8,7 +8,7 @@ const SessionPage = () => {
    return (
       <>
          {/* Top Bar */}
-         <div className="z-10 flex flex-col fixed top-0 left-0 right-0 h-40 w-full bg-custom-accent rounded-b-lg p-6 outer-shadow">
+         <div className="z-10 flex flex-col fixed top-0 left-0 right-0 h-40 w-full bg-custom-accent rounded-b-lg p-6 outershadow">
             <h1 className="mfont1">PUSH</h1>
             <div className="flex flex-row justify-between h-16 pt-2 mfont4 gap-3">
                <Button className="lightbutton h-full w-1/3">

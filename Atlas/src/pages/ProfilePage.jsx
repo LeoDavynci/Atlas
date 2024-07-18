@@ -1,10 +1,43 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { FaFireAlt } from "react-icons/fa";
+import React, { useState } from "react";
+import { UserAuth } from "@/context/AuthContext";
+import { logout } from "@/functions/auth";
 
-import React from "react";
+import {
+   Dialog,
+   DialogContent,
+   DialogDescription,
+   DialogFooter,
+   DialogHeader,
+   DialogTitle,
+   DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { updateData } from "@/functions/crud";
 
 const ProfilePage = () => {
+   const { user } = UserAuth();
+   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+   const handleProfileUpdate = () => {
+      const newUsername = document.getElementById("username").value;
+      const newSplit = document.getElementById("split").value;
+
+      updateData(user.uid, {
+         username: newUsername,
+         split: newSplit,
+      });
+
+      setIsDialogOpen(false);
+   };
+
+   const handleLogout = () => {
+      logout();
+   };
+
    return (
       <>
          <div className=" p-6 h-full">
@@ -18,26 +51,73 @@ const ProfilePage = () => {
                      <div>
                         <Avatar className="h-12 w-12">
                            <AvatarImage src="https://github.com/shadcn.png" />
-                           <AvatarFallback>VL</AvatarFallback>
+                           <AvatarFallback>user</AvatarFallback>
                         </Avatar>
                      </div>
-                     <div className="flex-col flex gap-1">
-                        <h1 className="mfont2">Vince</h1>
+                     <div className="flex-col flex gap-0.5">
+                        <h1 className="mfont29">{user?.fullName}</h1>
                         <div className="mfont3 flex-row flex gap-2">
                            <p className="flex gap-0.5">
-                              <FaFireAlt />4
+                              <FaFireAlt /> {user?.streak}
                            </p>
-                           <p>Split: PPL</p>
+                           <p>Split: {user?.split}</p>
                         </div>
                      </div>
                   </div>
-                  <div className="h-1/2">
-                     <p className="mfont3">Bio: fjdkafjkdsa</p>
-                  </div>
                </div>
                <div className="w-1/3 flex-col flex gap-2">
-                  <Button className="lightbutton w-full h-1/2">Edit</Button>
-                  <Button className="lightbutton w-full h-1/2">Logout</Button>
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                     <DialogTrigger asChild>
+                        <Button className="lightbutton w-full h-1/2">
+                           Edit Profile
+                        </Button>
+                     </DialogTrigger>
+                     <DialogContent className="w-10/12 light rounded-md">
+                        <DialogHeader>
+                           <DialogTitle className="mfont29">
+                              Edit profile
+                           </DialogTitle>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                           <div className="flex flex-col gap-1">
+                              <Label htmlFor="username" className="mfont4">
+                                 Username
+                              </Label>
+                              <Input
+                                 id="username"
+                                 defaultValue={user?.username}
+                                 className="rounded-sm"
+                              />
+                           </div>
+
+                           <div className="flex flex-col gap-1">
+                              <Label htmlFor="bio" className="mfont4">
+                                 Split
+                              </Label>
+                              <Input
+                                 id="split"
+                                 defaultValue={user?.split}
+                                 className="rounded-sm"
+                              />
+                           </div>
+                        </div>
+                        <DialogFooter>
+                           <Button
+                              type="submit"
+                              className="accentbutton"
+                              onClick={handleProfileUpdate}
+                           >
+                              Save changes
+                           </Button>
+                        </DialogFooter>
+                     </DialogContent>
+                  </Dialog>
+                  <Button
+                     className="lightbutton w-full h-1/2"
+                     onClick={handleLogout}
+                  >
+                     Logout
+                  </Button>
                </div>
             </div>
 

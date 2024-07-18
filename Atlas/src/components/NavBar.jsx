@@ -6,9 +6,9 @@ import { CgProfile } from "react-icons/cg";
 
 const NavBar = ({ children }) => {
    return (
-      <div className="min-h-screen flex flex-col">
+      <div className=" flex flex-col">
          <div className="flex-grow">{children}</div>
-         <nav className="fixed bottom-0 left-0 right-0 accent shadow-lg rounded-t-md">
+         <nav className="fixed bottom-0 left-0 right-0 accent outershadow2 rounded-t-md">
             <div className="flex justify-center items-center h-16">
                <Link to="/dashboard" className="px-4">
                   <GoHome className="w-9 h-9" />

@@ -16,11 +16,18 @@ const SignUp = () => {
    const [username, setUsername] = useState("");
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
+   const [split, setSplit] = useState(""); // Default split
+   const [profilePicURL, setProfilePicURL] = useState(""); // Default empty URL
 
    const userData = {
       fullName,
       username,
       email,
+      split,
+      streak: 0,
+      workouts: [],
+      profilePicURL,
+      createdAt: new Date().toISOString(),
    };
 
    const handleCreateUser = async (e) => {

@@ -1,8 +1,4 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 import {
    Card,
    CardHeader,
@@ -11,25 +7,15 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-const formSchema = z.object({
-   name: z.string().min(2, "Name must be at least 2 characters."),
-   username: z.string().min(2, "Username must be at least 2 characters."),
-   email: z.string().email("Invalid email address."),
-   password: z.string().min(6, "Password must be at least 6 characters."),
-});
+import { Button } from "@/components/ui/button";
+import { signIn } from "@/functions/auth";
 
 const Login = () => {
-   const {
-      register,
-      handleSubmit,
-      formState: { errors },
-   } = useForm({
-      resolver: zodResolver(formSchema),
-   });
+   const [email, setEmail] = useState();
+   const [password, setPassword] = useState();
 
-   const onSubmit = (data) => {
-      console.log(data);
+   const handleLogin = () => {
+      signIn(email, password);
    };
 
    return (
@@ -41,6 +27,7 @@ const Login = () => {
             </div>
             <h2 className="mfont0">ATLAS</h2>
          </div>
+
          {/* Form */}
          <Card className="rounded-md items-center justify-center light p-0 inner-shadow">
             <CardContent>
@@ -54,50 +41,43 @@ const Login = () => {
                            href="/signup"
                            className="mfont4 hover:underline font-medium"
                         >
-                           Sign Up
+                           Sign up
                         </a>
                      </p>
                   </div>
-                  <form
-                     onSubmit={handleSubmit(onSubmit)}
-                     className="space-y-2 mt-4"
-                  >
+                  <form className="space-y-2 mt-4">
                      {/* Email */}
                      <div>
-                        <text className="mfont4">Email</text>
+                        <p className="mfont4">Email</p>
                         <Input
                            className="rounded-sm customborder"
                            id="email"
                            type="email"
-                           {...register("email")}
+                           onChange={(e) => {
+                              setEmail(e.target.value);
+                           }}
                         />
-                        {errors.email && (
-                           <p className="text-red-500 text-sm">
-                              {errors.email.message}
-                           </p>
-                        )}
                      </div>
+
                      {/* Password */}
                      <div>
-                        <text className="mfont4">Password</text>
+                        <p className="mfont4">Password</p>
                         <Input
                            className="rounded-sm customborder"
                            id="password"
                            type="password"
-                           {...register("password")}
+                           onChange={(e) => {
+                              setPassword(e.target.value);
+                           }}
                         />
-                        {errors.password && (
-                           <p className="text-red-500 text-sm">
-                              {errors.password.message}
-                           </p>
-                        )}
                      </div>
 
                      {/* Submit Button */}
                      <div className="pb-1 pt-5">
                         <Button
-                           type="submit"
-                           className="rounded-sm accent items-center justify-center w-full hover:bg-accent2 "
+                           type="button"
+                           className="rounded-sm accentbutton items-center justify-center w-full"
+                           onClick={handleLogin}
                         >
                            Log In
                         </Button>

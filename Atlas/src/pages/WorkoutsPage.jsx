@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { UserAuth } from "@/context/AuthContext";
 import React from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoIosSearch } from "react-icons/io";
 
 const WorkoutsPage = () => {
+   const { user } = UserAuth();
+
    return (
       <>
          <div className=" p-6 h-full">
@@ -30,7 +33,7 @@ const WorkoutsPage = () => {
                      <h1 className="mfont2">Push</h1>
                   </div>
                   <div className="mt-2 ">
-                     <h1 className="mfont45">
+                     <h1 className="mfont49">
                         Benchpress, cable flies, tricep extensions, tricep
                         pushdowns, cable raises, incline dumb..
                      </h1>
@@ -49,7 +52,7 @@ const WorkoutsPage = () => {
                      <h1 className="mfont2">Push</h1>
                   </div>
                   <div className="mt-2 ">
-                     <h1 className="mfont45">
+                     <h1 className="mfont49">
                         Benchpress, cable flies, tricep extensions, tricep
                         pushdowns, cable raises, incline dumb..
                      </h1>
@@ -68,7 +71,7 @@ const WorkoutsPage = () => {
                      <h1 className="mfont2">Push</h1>
                   </div>
                   <div className="mt-2 ">
-                     <h1 className="mfont45">
+                     <h1 className="mfont49">
                         Benchpress, cable flies, tricep extensions, tricep
                         pushdowns, cable raises, incline dumb..
                      </h1>
@@ -87,7 +90,7 @@ const WorkoutsPage = () => {
                      <h1 className="mfont2">Push</h1>
                   </div>
                   <div className="mt-2 ">
-                     <h1 className="mfont45">
+                     <h1 className="mfont49">
                         Benchpress, cable flies, tricep extensions, tricep
                         pushdowns, cable raises, incline dumb..
                      </h1>
@@ -106,7 +109,7 @@ const WorkoutsPage = () => {
                      <h1 className="mfont2">Push</h1>
                   </div>
                   <div className="mt-2 ">
-                     <h1 className="mfont45">
+                     <h1 className="mfont49">
                         Benchpress, cable flies, tricep extensions, tricep
                         pushdowns, cable raises, incline dumb..
                      </h1>
@@ -118,6 +121,9 @@ const WorkoutsPage = () => {
                      </Button>
                   </div>
                </div>
+
+               {/* Buffer */}
+               <div className="h-16"></div>
             </div>
          </div>
       </>

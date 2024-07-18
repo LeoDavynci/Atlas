@@ -72,8 +72,12 @@
   box-shadow: inset -5px -5px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
-.outer-shadow {
-  box-shadow: 10px 10px 20px 0 rgba(0, 0, 0, 0.5);
+.outershadow {
+  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.5);
+}
+
+.outershadow2 {
+  box-shadow: 0 -10px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 .box30 {
