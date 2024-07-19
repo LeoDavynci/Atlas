@@ -7,7 +7,7 @@ import HorizontalScrollBar from "./HorizontalScrollBar";
 
 const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
    const [search, setSearch] = useState("");
-   const [bodyParts, setBodyparts] = useState([]);
+   const [bodyParts, setBodyParts] = useState([]);
 
    useEffect(() => {
       const fetchExercisesData = async () => {
@@ -16,7 +16,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
             exerciseOptions
          );
 
-         setBodyparts(["all", ...bodyPartsData]);
+         setBodyParts(["all", ...bodyPartsData]);
       };
 
       fetchExercisesData();
@@ -24,31 +24,41 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
 
    const handleSearch = async () => {
       if (search) {
-         const exercisesData = await fetchData(
-            "https://exercisedb.p.rapidapi.com/exercises",
-            exerciseOptions
-         );
+         try {
+            let allExercises = [];
+            let page = 1;
+            let hasMorePages = true;
 
-         console.log(exercisesData);
+            while (hasMorePages) {
+               const exercisesData = await fetchData(
+                  `https://exercisedb.p.rapidapi.com/exercises/name/${search}?limit=10&page=${page}`,
+                  exerciseOptions
+               );
 
-         const searchedExercises = exercisesData.filter(
-            (item) =>
-               item.name.toLowerCase().includes(search) ||
-               item.target.toLowerCase().includes(search) ||
-               item.equipment.toLowerCase().includes(search) ||
-               item.bodyPart.toLowerCase().includes(search)
-         );
+               if (exercisesData.length > 0) {
+                  allExercises = [...allExercises, ...exercisesData];
+                  page++;
+               } else {
+                  hasMorePages = false;
+               }
 
-         setSearch("");
-         setExercises(searchedExercises);
+               // Optional: break after a certain number of pages to avoid too many API calls
+               if (page > 5) break;
+            }
+
+            setExercises(allExercises);
+            setSearch("");
+         } catch (error) {
+            console.error("Error fetching exercises:", error);
+         }
       }
    };
 
    return (
       <>
-         <div>
+         <div className="flex flex-col gap-3">
             {/* Search Bar */}
-            <div className="testgreen w-full">
+            <div className=" w-full flex flex-row gap-3 h-12 pt-2 mfont4">
                <Input
                   className="light rounded-sm mfont4 border-none"
                   value={search}
@@ -64,7 +74,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
             </div>
 
             {/*  Scroll Bar */}
-            <div className="flex flex-row pt-40 px-6 w-full overflow-hidden">
+            <div className="flex flex-row w-full overflow-hidden">
                {bodyParts && bodyParts.length > 0 ? (
                   <HorizontalScrollBar
                      data={bodyParts}

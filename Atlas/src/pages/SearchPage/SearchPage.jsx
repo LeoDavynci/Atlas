@@ -10,23 +10,22 @@ const SearchPage = () => {
    return (
       <>
          {/*  Search Bar + Horizontal Scroll Bar */}
-         <div className="z-10 flex flex-col fixed top-0 left-0 right-0 h-36 w-full bg-custom-accent rounded-b-lg p-6 outershadow">
+         <div className="z-10 flex flex-col fixed top-0 left-0 right-0 h-44 w-full bg-custom-accent rounded-b-lg p-6 outershadow">
             <h1 className="mfont1">Explore</h1>
-            <div className="flex flex-row gap-2 h-16 pt-2 mfont4 ">
-               <SearchExercises
-                  setExercises={setExercises}
-                  bodyPart={bodyPart}
-                  setBodyPart={setBodyPart}
-               />
-            </div>
+
+            <SearchExercises
+               setExercises={setExercises}
+               bodyPart={bodyPart}
+               setBodyPart={setBodyPart}
+            />
          </div>
 
          {/* Exercises */}
-         <div className="p-6 h-full">
+         <div className="p-6 h-full pt-64">
             <Exercises
+               exercises={exercises}
                setExercises={setExercises}
                bodyPart={bodyPart}
-               exercises={exercises}
             />
          </div>
       </>

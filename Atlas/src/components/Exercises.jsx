@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import ExerciseCard from "./ExerciseCard";
 
-import { exerciseOptions, fetchData } from "@/utils/fetchData";
-
-const Exercises = ({ setExercises, bodyPart, exercises }) => {
+const Exercises = ({ exercises, setExercises, bodyPart }) => {
    console.log(exercises);
    return (
-      <div>
-         <p>Results</p>
-         {exercises.map((exercise, index) => (
-            <p>{exercise.name}</p>
-         ))}
+      <div className="container mx-auto px-4">
+         <h2 className="text-2xl font-bold mb-6">Results</h2>
+         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {exercises.map((exercise, index) => (
+               <ExerciseCard
+                  key={`${exercise.id}-${index}`}
+                  exercise={exercise}
+               />
+            ))}
+         </div>
       </div>
    );
 };

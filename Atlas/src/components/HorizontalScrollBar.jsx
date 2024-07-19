@@ -18,7 +18,7 @@ const HorizontalScrollBar = ({ data, bodyPart, setBodyPart }) => {
       <div className="flex items-center w-full gap-2">
          <Button
             onClick={() => scroll("left")}
-            className="accentbutton"
+            className="accentbutton w-5"
             disabled={scrollPosition <= 0}
          >
             ←
@@ -37,11 +37,10 @@ const HorizontalScrollBar = ({ data, bodyPart, setBodyPart }) => {
                   key={item.id || item}
                   itemID={item.id || item}
                   title={item.id || item}
-                  className="accentbox p-2 mfont35 mr-2 flex-shrink-0 flex items-center"
+                  className="light p-2 mfont3 mr-2 flex-shrink-0 flex items-center cursor-pointer rounded-sm"
                   onClick={() => setBodyPart(item)}
                   style={{
-                     cursor: "pointer",
-                     backgroundColor: bodyPart === item ? "#4a5568" : "",
+                     backgroundColor: bodyPart === item ? "#594D93" : "",
                      color: bodyPart === item ? "white" : "",
                   }}
                >
@@ -52,7 +51,7 @@ const HorizontalScrollBar = ({ data, bodyPart, setBodyPart }) => {
 
          <Button
             onClick={() => scroll("right")}
-            className="accentbutton"
+            className="accentbutton w-5"
             disabled={
                scrollPosition >=
                containerRef.current?.scrollWidth -
