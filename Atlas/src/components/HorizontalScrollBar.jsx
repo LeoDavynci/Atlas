@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import { Button } from "./ui/button";
+import BodyPart from "./BodyPart";
 
-const HorizontalScrollBar = ({ data, bodyPart, setBodyPart }) => {
+const HorizontalScrollBar = ({ data, bodyParts, bodyPart, setBodyPart }) => {
    const [scrollPosition, setScrollPosition] = useState(0);
    const containerRef = useRef(null);
 
@@ -32,20 +33,13 @@ const HorizontalScrollBar = ({ data, bodyPart, setBodyPart }) => {
                width: "calc(100% - 80px)", // Adjust based on arrow button sizes
             }}
          >
-            {data.map((item) => (
-               <div
-                  key={item.id || item}
-                  itemID={item.id || item}
-                  title={item.id || item}
-                  className="light p-2 mfont3 mr-2 flex-shrink-0 flex items-center cursor-pointer rounded-sm"
-                  onClick={() => setBodyPart(item)}
-                  style={{
-                     backgroundColor: bodyPart === item ? "#594D93" : "",
-                     color: bodyPart === item ? "white" : "",
-                  }}
-               >
-                  <div>{item.name || item}</div>
-               </div>
+            {data.map((item, index) => (
+               <BodyPart
+                  key={item.id || item.name || index}
+                  item={item}
+                  bodyPart={bodyPart}
+                  setBodyPart={setBodyPart}
+               />
             ))}
          </div>
 

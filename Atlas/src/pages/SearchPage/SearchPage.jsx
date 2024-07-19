@@ -7,6 +7,8 @@ const SearchPage = () => {
    const [exercises, setExercises] = useState([]);
    const [bodyPart, setBodyPart] = useState("all");
 
+   console.log(bodyPart);
+
    return (
       <>
          {/*  Search Bar + Horizontal Scroll Bar */}
@@ -21,7 +23,7 @@ const SearchPage = () => {
          </div>
 
          {/* Exercises */}
-         <div className="p-6 h-full pt-64">
+         <div className="p-6 h-full pt-52">
             <Exercises
                exercises={exercises}
                setExercises={setExercises}

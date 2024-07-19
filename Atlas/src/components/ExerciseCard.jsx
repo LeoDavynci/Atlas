@@ -7,7 +7,7 @@ const ExerciseCard = ({ exercise, index }) => {
       <Link to={`/exercise/${exercise.id}`}>
          <div
             key={`${exercise.id}-${index}`}
-            className=" flex flex-col p-4 border rounded-md gap-2"
+            className=" flex flex-col p-2 pb-4 border rounded-md gap-2 light"
          >
             <img
                className="rounded-md"
@@ -15,7 +15,7 @@ const ExerciseCard = ({ exercise, index }) => {
                alt={exercise.name}
                loading="lazy"
             />
-            <p className="mfont35">{exercise.name}</p>
+            <p className="mfont3">{exercise.name}</p>
             <Button className="accent rounded-sm mfont55 p-2 h-5 w-min">
                <p>
                   {exercise.bodyPart}
@@ -24,7 +24,7 @@ const ExerciseCard = ({ exercise, index }) => {
                </p>
             </Button>
 
-            <p className="mfont55">Equipment: {exercise.equipment}</p>
+            <p className="mfont5">Equipment: {exercise.equipment}</p>
          </div>
       </Link>
    );
