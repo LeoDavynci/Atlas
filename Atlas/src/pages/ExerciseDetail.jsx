@@ -9,6 +9,7 @@ import SimilarExercises from "../components/SimilarExercises";
 const ExerciseDetail = () => {
    const [exerciseDetail, setExerciseDetail] = useState({});
    const [exerciseVideos, setExerciseVideos] = useState([]);
+   const [targetMuscleExercises, setTargetMuscleExercises] = useState([]);
    const { id } = useParams();
    const navigate = useNavigate();
 
@@ -29,7 +30,13 @@ const ExerciseDetail = () => {
          );
          setExerciseVideos(exerciseVideoData.contents);
 
-         console.log({ exerciseDetailData });
+         const targetMuscleExercisesData = await fetchData(
+            `${exerciseDbUrl}/exercises/target/${exerciseDetailData.target}`,
+            exerciseOptions
+         );
+         setTargetMuscleExercises(targetMuscleExercisesData);
+
+         // console.log({ exerciseDetailData });
       };
       fetchExerciseDetail();
    }, [id]);
@@ -51,15 +58,15 @@ const ExerciseDetail = () => {
             <Detail exerciseDetail={exerciseDetail} />
          </div>
 
-         <div className=" pr-6">
+         <div className="py-10">
+            <SimilarExercises targetMuscleExercises={targetMuscleExercises} />
+         </div>
+
+         <div className="py-10 pr-6">
             <ExerciseVideos
                exerciseVideos={exerciseVideos}
                name={exerciseDetail.name}
             />
-         </div>
-
-         <div className="pb-10">
-            <SimilarExercises />
          </div>
       </div>
    );

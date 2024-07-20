@@ -6,14 +6,16 @@ const BodyPart = ({ item, bodyPart, setBodyPart }) => {
          key={item.id || item}
          itemID={item.id || item}
          title={item.id || item}
-         className="light p-2 mfont3 mr-2 flex-shrink-0 flex items-center cursor-pointer rounded-sm"
+         className="light p-2 mfont3 mr-2 flex-shrink-0 flex items-center justify-center cursor-pointer rounded-sm whitespace-nowrap"
          onClick={() => setBodyPart(item)}
          style={{
             backgroundColor: bodyPart === item ? "#594D93" : "",
             color: bodyPart === item ? "white" : "",
+            minWidth: "fit-content",
+            height: "40px", // Set a fixed height
          }}
       >
-         <div>{item.name || item}</div>
+         <div className="truncate">{item.name || item}</div>
       </div>
    );
 };

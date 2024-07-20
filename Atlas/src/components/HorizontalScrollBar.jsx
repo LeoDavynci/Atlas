@@ -1,8 +1,9 @@
 import React, { useState, useRef } from "react";
 import { Button } from "./ui/button";
 import BodyPart from "./BodyPart";
+import ExerciseCard from "./ExerciseCard";
 
-const HorizontalScrollBar = ({ data, bodyParts, bodyPart, setBodyPart }) => {
+const HorizontalScrollBar = ({ data, isBodyParts, bodyPart, setBodyPart }) => {
    const [scrollPosition, setScrollPosition] = useState(0);
    const containerRef = useRef(null);
 
@@ -34,12 +35,18 @@ const HorizontalScrollBar = ({ data, bodyParts, bodyPart, setBodyPart }) => {
             }}
          >
             {data.map((item, index) => (
-               <BodyPart
-                  key={item.id || item.name || index}
-                  item={item}
-                  bodyPart={bodyPart}
-                  setBodyPart={setBodyPart}
-               />
+               <div>
+                  {isBodyParts ? (
+                     <BodyPart
+                        key={item.id || item.name || index}
+                        item={item}
+                        bodyPart={bodyPart}
+                        setBodyPart={setBodyPart}
+                     />
+                  ) : (
+                     <ExerciseCard exercise={item} />
+                  )}
+               </div>
             ))}
          </div>
 

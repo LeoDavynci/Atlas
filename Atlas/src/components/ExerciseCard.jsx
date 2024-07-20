@@ -16,6 +16,7 @@ const ExerciseCard = ({ exercise, index }) => {
                loading="lazy"
             />
             <p className="mfont3">{exercise.name}</p>
+
             <Button className="accent rounded-sm mfont55 p-2 h-5 w-min">
                <p>
                   {exercise.bodyPart}
