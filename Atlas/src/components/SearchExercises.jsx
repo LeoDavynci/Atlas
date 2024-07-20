@@ -73,7 +73,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
                </Button>
             </div>
 
-            {/*  Scroll Bar */}
+            {/*  Scroll Bar for Body Parts */}
             <div className="flex flex-row w-full overflow-hidden">
                {bodyParts && bodyParts.length > 0 ? (
                   <HorizontalScrollBar

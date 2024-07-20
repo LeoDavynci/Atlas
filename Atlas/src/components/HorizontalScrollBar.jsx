@@ -3,7 +3,15 @@ import { Button } from "./ui/button";
 import BodyPart from "./BodyPart";
 import ExerciseCard from "./ExerciseCard";
 
-const HorizontalScrollBar = ({ data, isBodyParts, bodyPart, setBodyPart }) => {
+const HorizontalScrollBar = ({
+   data,
+   isBodyParts,
+   bodyPart,
+   setBodyPart,
+   equipment,
+   setEquipment,
+   hide,
+}) => {
    const [scrollPosition, setScrollPosition] = useState(0);
    const containerRef = useRef(null);
 
@@ -44,7 +52,7 @@ const HorizontalScrollBar = ({ data, isBodyParts, bodyPart, setBodyPart }) => {
                         setBodyPart={setBodyPart}
                      />
                   ) : (
-                     <ExerciseCard exercise={item} />
+                     <ExerciseCard exercise={item} hide />
                   )}
                </div>
             ))}

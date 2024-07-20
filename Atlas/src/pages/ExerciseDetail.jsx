@@ -46,23 +46,25 @@ const ExerciseDetail = () => {
    };
 
    return (
-      <div className="pl-6 pt-6 h-full flex flex-col">
-         <button
-            onClick={handleBackClick}
-            className="px-4 py-2 accentbutton text-white rounded hover:bg-custom-accent2 self-start mb-4"
-         >
-            {"< Back"}
-         </button>
+      <div className="pb-6 h-full flex flex-col">
+         <div className="absolute top-4 left-4 z-10">
+            <button
+               onClick={handleBackClick}
+               className="px-4 py-2 accentbutton text-white rounded hover:bg-custom-accent2 self-start mfont35"
+            >
+               {"< Back"}
+            </button>
+         </div>
 
          <div>
             <Detail exerciseDetail={exerciseDetail} />
          </div>
 
-         <div className="py-10">
+         <div className="py-10 px-6">
             <SimilarExercises targetMuscleExercises={targetMuscleExercises} />
          </div>
 
-         <div className="py-10 pr-6">
+         <div className="pb-5 px-6">
             <ExerciseVideos
                exerciseVideos={exerciseVideos}
                name={exerciseDetail.name}
