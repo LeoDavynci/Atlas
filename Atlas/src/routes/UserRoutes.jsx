@@ -1,5 +1,6 @@
 import NavBar from "@/components/NavBar";
 import PageLayout from "@/PageLayout";
+import ExerciseDetail from "@/pages/ExerciseDetail";
 import HomePage from "@/pages/HomePage";
 import ProfilePage from "@/pages/ProfilePage";
 import SearchPage from "@/pages/SearchPage/SearchPage";
@@ -19,6 +20,7 @@ const UserRoutes = () => {
          </Route>
          <Route path="/session" element={<SessionPage />} />
          <Route path="/explore" element={<SearchPage />} />
+         <Route path="/exercise/:id" element={<ExerciseDetail />} />
       </Routes>
    );
 };
