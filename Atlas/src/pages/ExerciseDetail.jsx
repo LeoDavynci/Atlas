@@ -58,11 +58,11 @@ const ExerciseDetail = () => {
             <Detail exerciseDetail={exerciseDetail} />
          </div>
 
-         <div className="py-10 px-6">
+         <div className="py-5 px-6">
             <SimilarExercises targetMuscleExercises={targetMuscleExercises} />
          </div>
 
-         <div className="pb-5 px-6">
+         <div className="py-5 px-6">
             <ExerciseVideos
                exerciseVideos={exerciseVideos}
                name={exerciseDetail.name}
