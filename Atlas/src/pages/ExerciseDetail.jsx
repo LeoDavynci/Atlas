@@ -17,8 +17,10 @@ const ExerciseDetail = () => {
       const fetchExerciseDetail = async () => {
          const exerciseDbUrl = `https://workoutdb1.p.rapidapi.com`;
          const youtubeSearchUrl = `https://youtube-search-and-download.p.rapidapi.com`;
+
          console.log(`Fetching from: ${exerciseDbUrl}/exercise/id/${id}`);
          console.log("Options:", exerciseOptions);
+         console.log({ id });
 
          const exerciseDetailData = await fetchData(
             `${exerciseDbUrl}/exercise/id/${id}`,
@@ -38,7 +40,9 @@ const ExerciseDetail = () => {
          );
          setTargetMuscleExercises(targetMuscleExercisesData);
 
+         console.log("-------------");
          console.log({ exerciseDetailData });
+         console.log("-------------");
       };
       fetchExerciseDetail();
    }, [id]);

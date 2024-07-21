@@ -56,6 +56,8 @@ const SearchExercises = ({
          } catch (error) {
             console.error("Error fetching exercises:", error);
          }
+      } else {
+         setExercises(exercisesData);
       }
    };
 
