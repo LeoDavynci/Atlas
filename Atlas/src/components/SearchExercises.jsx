@@ -5,11 +5,16 @@ import { Input } from "@/components/ui/input";
 import { exerciseOptions, fetchData } from "@/utils/fetchData";
 import HorizontalScrollBar from "./HorizontalScrollBar";
 
-const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
+const SearchExercises = ({
+   setExercises,
+   bodyPart,
+   setBodyPart,
+   equipment,
+   setEquipment,
+}) => {
    const [search, setSearch] = useState("");
    const [bodyParts, setBodyParts] = useState([]);
-   const [targets, setTargets] = useState([]);
-   const [equipment, setEquipment] = useState([]);
+   const [equipments, setEquipments] = useState([]);
 
    useEffect(() => {
       const fetchExercisesData = async () => {
@@ -17,18 +22,14 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
             "https://workoutdb1.p.rapidapi.com/exercise/bodyPartList",
             exerciseOptions
          );
-         const targetsData = await fetchData(
-            "https://workoutdb1.p.rapidapi.com/exercise/targetList",
-            exerciseOptions
-         );
+
          const equipmentData = await fetchData(
             "https://workoutdb1.p.rapidapi.com/exercise/equipmentList",
             exerciseOptions
          );
 
          setBodyParts(["all", ...bodyPartsData]);
-         setTargets(["all", ...targetsData]);
-         setEquipment(["all", ...equipmentData]);
+         setEquipments(["all", ...equipmentData]);
       };
 
       fetchExercisesData();
@@ -37,28 +38,20 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
    const handleSearch = async () => {
       if (search) {
          try {
-            let allExercises = [];
-            let page = 1;
-            let hasMorePages = true;
+            const exercisesData = await fetchData(
+               `https://workoutdb1.p.rapidapi.com/exercise/all`,
+               exerciseOptions
+            );
 
-            while (hasMorePages) {
-               const exercisesData = await fetchData(
-                  `https://workoutdb1.p.rapidapi.com/exercise/name/${search}?limit=10&page=${page}`,
-                  exerciseOptions
-               );
+            const searchedExercises = exercisesData.filter(
+               (item) =>
+                  item.name.toLowerCase().includes(search) ||
+                  item.target.toLowerCase().includes(search) ||
+                  item.equipment.toLowerCase().includes(search) ||
+                  item.bodyPart.toLowerCase().includes(search)
+            );
 
-               if (exercisesData.length > 0) {
-                  allExercises = [...allExercises, ...exercisesData];
-                  page++;
-               } else {
-                  hasMorePages = false;
-               }
-
-               // Optional: break after a certain number of pages to avoid too many API calls
-               if (page > 5) break;
-            }
-
-            setExercises(allExercises);
+            setExercises(searchedExercises);
             setSearch("");
          } catch (error) {
             console.error("Error fetching exercises:", error);
@@ -90,8 +83,8 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
                {bodyParts && bodyParts.length > 0 ? (
                   <HorizontalScrollBar
                      data={bodyParts}
-                     bodyPart={bodyPart}
-                     setBodyPart={setBodyPart}
+                     filter={bodyPart}
+                     setFilter={setBodyPart}
                      isBodyParts
                   />
                ) : (
@@ -99,27 +92,13 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
                )}
             </div>
 
-            {/* Scroll Bar for Targets */}
-            <div className="flex flex-row w-full overflow-hidden">
-               {targets && targets.length > 0 ? (
-                  <HorizontalScrollBar
-                     data={targets}
-                     bodyPart={bodyPart}
-                     setBodyPart={setBodyPart}
-                     isTargets
-                  />
-               ) : (
-                  <p>Loading targets...</p>
-               )}
-            </div>
-
             {/* Scroll Bar for Equipment */}
             <div className="flex flex-row w-full overflow-hidden">
-               {equipment && equipment.length > 0 ? (
+               {equipments && equipments.length > 0 ? (
                   <HorizontalScrollBar
-                     data={equipment}
-                     bodyPart={bodyPart}
-                     setBodyPart={setBodyPart}
+                     data={equipments}
+                     filter={equipment}
+                     setFilter={setEquipment}
                      isEquipment
                   />
                ) : (

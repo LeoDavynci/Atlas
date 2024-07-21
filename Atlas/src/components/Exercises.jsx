@@ -3,49 +3,48 @@ import ExerciseCard from "./ExerciseCard";
 import { exerciseOptions, fetchData } from "@/utils/fetchData";
 import { Button } from "./ui/button";
 
-const Exercises = ({ exercises, setExercises, bodyPart }) => {
+const Exercises = ({ exercises, setExercises, bodyPart, equipment }) => {
    const [currentPage, setCurrentPage] = useState(1);
    const [exercisesPerPage] = useState(20);
    const [loading, setLoading] = useState(true);
+   const [filteredExercises, setFilteredExercises] = useState([]);
 
    useEffect(() => {
       const fetchExercisesData = async () => {
          setLoading(true);
-         let exercisesData = [];
-         if (bodyPart === "all") {
-            exercisesData = await fetchData(
-               `https://workoutdb1.p.rapidapi.com/exercise/all`,
-               exerciseOptions
-            );
-         } else {
-            exercisesData = await fetchData(
-               `https://workoutdb1.p.rapidapi.com/exercise/bodyPart/${bodyPart}?limit=1000`,
-               exerciseOptions
-            );
-         }
+         const exercisesData = await fetchData(
+            "https://workoutdb1.p.rapidapi.com/exercise/all",
+            exerciseOptions
+         );
          setExercises(exercisesData);
          setLoading(false);
-         setCurrentPage(1);
       };
 
       fetchExercisesData();
-   }, [bodyPart, setExercises]);
+   }, [setExercises]);
 
-   // Only proceed with pagination if exercises is defined and not empty
-   if (!exercises || exercises.length === 0) {
-      return <div>No exercises found.</div>;
-   }
+   useEffect(() => {
+      if (exercises.length > 0) {
+         const filtered = exercises.filter(
+            (exercise) =>
+               (bodyPart === "all" || exercise.bodyPart === bodyPart) &&
+               (equipment === "all" || exercise.equipment === equipment)
+         );
+         setFilteredExercises(filtered);
+         setCurrentPage(1);
+      }
+   }, [exercises, bodyPart, equipment]);
 
    // Get current exercises
    const indexOfLastExercise = currentPage * exercisesPerPage;
    const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
-   const currentExercises = exercises.slice(
+   const currentExercises = filteredExercises.slice(
       indexOfFirstExercise,
       indexOfLastExercise
    );
 
    // Calculate total pages
-   const totalPages = Math.ceil(exercises.length / exercisesPerPage);
+   const totalPages = Math.ceil(filteredExercises.length / exercisesPerPage);
 
    // Change page
    const paginate = (pageNumber) => {

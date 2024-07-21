@@ -1,16 +1,10 @@
 import React from "react";
 
-const BodyPart = ({ item, bodyPart, setBodyPart, isTarget, isEquipment }) => {
+const BodyPart = ({ item, filter, setFilter }) => {
    const handleClick = () => {
-      setBodyPart(item);
+      setFilter(item);
       window.scrollTo({ top: 1800, left: 100, behavior: "smooth" });
    };
-
-   // const getPrefix = () => {
-   //    if (isTarget) return "Target: ";
-   //    if (isEquipment) return "Equipment: ";
-   //    return "";
-   // };
 
    return (
       <div
@@ -20,16 +14,13 @@ const BodyPart = ({ item, bodyPart, setBodyPart, isTarget, isEquipment }) => {
          className="light p-2 mfont3 mr-2 flex-shrink-0 flex items-center justify-center cursor-pointer rounded-sm whitespace-nowrap"
          onClick={handleClick}
          style={{
-            backgroundColor: bodyPart === item ? "#594D93" : "",
-            color: bodyPart === item ? "white" : "",
+            backgroundColor: filter === item ? "#594D93" : "",
+            color: filter === item ? "white" : "",
             minWidth: "fit-content",
             height: "40px", // Set a fixed height
          }}
       >
-         <div className="truncate">
-            {/* {getPrefix()} */}
-            {item.name || item}
-         </div>
+         <div className="truncate">{item.name || item}</div>
       </div>
    );
 };

@@ -6,8 +6,7 @@ import SearchExercises from "@/components/SearchExercises";
 const SearchPage = () => {
    const [exercises, setExercises] = useState([]);
    const [bodyPart, setBodyPart] = useState("all");
-
-   console.log(bodyPart);
+   const [equipment, setEquipment] = useState("all");
 
    return (
       <>
@@ -19,6 +18,8 @@ const SearchPage = () => {
                setExercises={setExercises}
                bodyPart={bodyPart}
                setBodyPart={setBodyPart}
+               equipment={equipment}
+               setEquipment={setEquipment}
             />
          </div>
 
@@ -28,6 +29,7 @@ const SearchPage = () => {
                exercises={exercises}
                setExercises={setExercises}
                bodyPart={bodyPart}
+               equipment={equipment}
             />
          </div>
       </>

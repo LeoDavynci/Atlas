@@ -4,12 +4,11 @@ import BodyPart from "./BodyPart";
 import ExerciseCard from "./ExerciseCard";
 
 const HorizontalScrollBar = ({
-   data,
+   data = [],
    isBodyParts,
-   isTargets,
    isEquipment,
-   bodyPart,
-   setBodyPart,
+   filter,
+   setFilter,
    hide,
 }) => {
    const [scrollPosition, setScrollPosition] = useState(0);
@@ -42,33 +41,26 @@ const HorizontalScrollBar = ({
                width: "calc(100% - 80px)",
             }}
          >
-            {data.map((item, index) => (
-               <div key={item.id || item.name || index}>
-                  {isBodyParts ? (
-                     <BodyPart
-                        item={item}
-                        bodyPart={bodyPart}
-                        setBodyPart={setBodyPart}
-                     />
-                  ) : isTargets ? (
-                     <BodyPart
-                        item={item}
-                        bodyPart={bodyPart}
-                        setBodyPart={setBodyPart}
-                        isTarget
-                     />
-                  ) : isEquipment ? (
-                     <BodyPart
-                        item={item}
-                        bodyPart={bodyPart}
-                        setBodyPart={setBodyPart}
-                        isEquipment
-                     />
-                  ) : (
-                     <ExerciseCard exercise={item} hide={hide} />
-                  )}
-               </div>
-            ))}
+            {Array.isArray(data) &&
+               data.map((item, index) => (
+                  <div key={item.id || item.name || index}>
+                     {isBodyParts ? (
+                        <BodyPart
+                           item={item}
+                           filter={filter}
+                           setFilter={setFilter}
+                        />
+                     ) : isEquipment ? (
+                        <BodyPart
+                           item={item}
+                           filter={filter}
+                           setFilter={setFilter}
+                        />
+                     ) : (
+                        <ExerciseCard exercise={item} hide={hide} />
+                     )}
+                  </div>
+               ))}
          </div>
 
          <Button
