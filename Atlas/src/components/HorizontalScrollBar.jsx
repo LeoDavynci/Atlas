@@ -6,10 +6,10 @@ import ExerciseCard from "./ExerciseCard";
 const HorizontalScrollBar = ({
    data,
    isBodyParts,
+   isTargets,
+   isEquipment,
    bodyPart,
    setBodyPart,
-   equipment,
-   setEquipment,
    hide,
 }) => {
    const [scrollPosition, setScrollPosition] = useState(0);
@@ -39,20 +39,33 @@ const HorizontalScrollBar = ({
             className="flex overflow-hidden h-full"
             style={{
                scrollBehavior: "smooth",
-               width: "calc(100% - 80px)", // Adjust based on arrow button sizes
+               width: "calc(100% - 80px)",
             }}
          >
             {data.map((item, index) => (
-               <div>
+               <div key={item.id || item.name || index}>
                   {isBodyParts ? (
                      <BodyPart
-                        key={item.id || item.name || index}
                         item={item}
                         bodyPart={bodyPart}
                         setBodyPart={setBodyPart}
                      />
+                  ) : isTargets ? (
+                     <BodyPart
+                        item={item}
+                        bodyPart={bodyPart}
+                        setBodyPart={setBodyPart}
+                        isTarget
+                     />
+                  ) : isEquipment ? (
+                     <BodyPart
+                        item={item}
+                        bodyPart={bodyPart}
+                        setBodyPart={setBodyPart}
+                        isEquipment
+                     />
                   ) : (
-                     <ExerciseCard exercise={item} hide />
+                     <ExerciseCard exercise={item} hide={hide} />
                   )}
                </div>
             ))}

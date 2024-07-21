@@ -8,15 +8,27 @@ import HorizontalScrollBar from "./HorizontalScrollBar";
 const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
    const [search, setSearch] = useState("");
    const [bodyParts, setBodyParts] = useState([]);
+   const [targets, setTargets] = useState([]);
+   const [equipment, setEquipment] = useState([]);
 
    useEffect(() => {
       const fetchExercisesData = async () => {
          const bodyPartsData = await fetchData(
-            "https://exercisedb.p.rapidapi.com/exercises/bodyPartList",
+            "https://workoutdb1.p.rapidapi.com/exercise/bodyPartList",
+            exerciseOptions
+         );
+         const targetsData = await fetchData(
+            "https://workoutdb1.p.rapidapi.com/exercise/targetList",
+            exerciseOptions
+         );
+         const equipmentData = await fetchData(
+            "https://workoutdb1.p.rapidapi.com/exercise/equipmentList",
             exerciseOptions
          );
 
          setBodyParts(["all", ...bodyPartsData]);
+         setTargets(["all", ...targetsData]);
+         setEquipment(["all", ...equipmentData]);
       };
 
       fetchExercisesData();
@@ -31,7 +43,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
 
             while (hasMorePages) {
                const exercisesData = await fetchData(
-                  `https://exercisedb.p.rapidapi.com/exercises/name/${search}?limit=10&page=${page}`,
+                  `https://workoutdb1.p.rapidapi.com/exercise/name/${search}?limit=10&page=${page}`,
                   exerciseOptions
                );
 
@@ -58,7 +70,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
       <>
          <div className="flex flex-col gap-3">
             {/* Search Bar */}
-            <div className=" w-full flex flex-row gap-3 h-12 pt-2 mfont4">
+            <div className="w-full flex flex-row gap-3 h-12 pt-2 mfont4">
                <Input
                   className="light rounded-sm mfont4 border-none"
                   value={search}
@@ -73,7 +85,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
                </Button>
             </div>
 
-            {/*  Scroll Bar for Body Parts */}
+            {/* Scroll Bar for Body Parts */}
             <div className="flex flex-row w-full overflow-hidden">
                {bodyParts && bodyParts.length > 0 ? (
                   <HorizontalScrollBar
@@ -84,6 +96,34 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
                   />
                ) : (
                   <p>Loading body parts...</p>
+               )}
+            </div>
+
+            {/* Scroll Bar for Targets */}
+            <div className="flex flex-row w-full overflow-hidden">
+               {targets && targets.length > 0 ? (
+                  <HorizontalScrollBar
+                     data={targets}
+                     bodyPart={bodyPart}
+                     setBodyPart={setBodyPart}
+                     isTargets
+                  />
+               ) : (
+                  <p>Loading targets...</p>
+               )}
+            </div>
+
+            {/* Scroll Bar for Equipment */}
+            <div className="flex flex-row w-full overflow-hidden">
+               {equipment && equipment.length > 0 ? (
+                  <HorizontalScrollBar
+                     data={equipment}
+                     bodyPart={bodyPart}
+                     setBodyPart={setBodyPart}
+                     isEquipment
+                  />
+               ) : (
+                  <p>Loading equipment...</p>
                )}
             </div>
          </div>
