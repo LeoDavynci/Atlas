@@ -17,9 +17,11 @@ const ExerciseDetail = () => {
       const fetchExerciseDetail = async () => {
          const exerciseDbUrl = `https://workoutdb1.p.rapidapi.com`;
          const youtubeSearchUrl = `https://youtube-search-and-download.p.rapidapi.com`;
+         console.log(`Fetching from: ${exerciseDbUrl}/exercise/id/${id}`);
+         console.log("Options:", exerciseOptions);
 
          const exerciseDetailData = await fetchData(
-            `${exerciseDbUrl}/exercises/exercise/${id}`,
+            `${exerciseDbUrl}/exercise/id/${id}`,
             exerciseOptions
          );
          setExerciseDetail(exerciseDetailData);
@@ -31,12 +33,12 @@ const ExerciseDetail = () => {
          setExerciseVideos(exerciseVideoData.contents);
 
          const targetMuscleExercisesData = await fetchData(
-            `${exerciseDbUrl}/exercises/target/${exerciseDetailData.target}`,
+            `${exerciseDbUrl}/exercise/target/${exerciseDetailData.target}`,
             exerciseOptions
          );
          setTargetMuscleExercises(targetMuscleExercisesData);
 
-         // console.log({ exerciseDetailData });
+         console.log({ exerciseDetailData });
       };
       fetchExerciseDetail();
    }, [id]);

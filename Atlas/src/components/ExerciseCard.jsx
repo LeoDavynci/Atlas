@@ -8,7 +8,7 @@ const ExerciseCard = ({ exercise, index, hide }) => {
          <div
             key={`${exercise.id}-${index}`}
             className={`flex flex-col p-2 pb-4 border rounded-md gap-2 light m-1 ${
-               hide ? "h-56 w-36" : "w-auto h-64"
+               hide ? "h-56 w-36" : "w-auto h-max"
             }`}
          >
             <img

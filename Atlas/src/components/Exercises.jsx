@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 
 const Exercises = ({ exercises, setExercises, bodyPart, equipment }) => {
    const [currentPage, setCurrentPage] = useState(1);
-   const [exercisesPerPage] = useState(20);
+   const [exercisesPerPage] = useState(24);
    const [loading, setLoading] = useState(true);
    const [filteredExercises, setFilteredExercises] = useState([]);
 
@@ -58,7 +58,7 @@ const Exercises = ({ exercises, setExercises, bodyPart, equipment }) => {
 
    return (
       <div className="container mx-auto">
-         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
             {currentExercises.map((exercise, index) => (
                <ExerciseCard
                   key={`${exercise.id}-${index}`}

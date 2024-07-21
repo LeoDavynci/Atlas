@@ -24,7 +24,7 @@ const SearchPage = () => {
          </div>
 
          {/* Exercises */}
-         <div className="p-6 h-full pt-80">
+         <div className="p-6 h-full pt-64">
             <Exercises
                exercises={exercises}
                setExercises={setExercises}

@@ -20,7 +20,7 @@ const UserRoutes = () => {
          </Route>
          <Route path="/session" element={<SessionPage />} />
          <Route path="/explore" element={<SearchPage />} />
-         <Route path="/exercise/:id" element={<ExerciseDetail />} />
+         <Route path="/exercise/id/:id" element={<ExerciseDetail />} />
       </Routes>
    );
 };
