@@ -19,12 +19,12 @@ const SearchExercises = ({
    useEffect(() => {
       const fetchExercisesData = async () => {
          const bodyPartsData = await fetchData(
-            "https://workoutdb1.p.rapidapi.com/exercise/bodyPartList",
+            "https://exercisedb.p.rapidapi.com/exercises/bodyPartList",
             exerciseOptions
          );
 
          const equipmentData = await fetchData(
-            "https://workoutdb1.p.rapidapi.com/exercise/equipmentList",
+            "https://exercisedb.p.rapidapi.com/exercises/equipmentList",
             exerciseOptions
          );
 
@@ -39,7 +39,7 @@ const SearchExercises = ({
       if (search) {
          try {
             const exercisesData = await fetchData(
-               `https://workoutdb1.p.rapidapi.com/exercise/all`,
+               `https://exercisedb.p.rapidapi.com/exercises?limit=0&offset=0`,
                exerciseOptions
             );
 

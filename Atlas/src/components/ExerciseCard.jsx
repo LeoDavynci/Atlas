@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 
 const ExerciseCard = ({ exercise, index, hide }) => {
    return (
-      <Link to={`/exercise/id/${exercise.id}`}>
+      <Link to={`/exercises/exercise/${exercise.id}`}>
          <div
             key={`${exercise.id}-${index}`}
             className={`flex flex-col p-2 pb-4 border rounded-md gap-2 light m-1 ${

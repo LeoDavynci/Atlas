@@ -3,20 +3,11 @@ import axios from 'axios';
 
 const rapidApiKey = 'c674a89694mshf25209a7a9ba5e7p10164cjsnc88b4361f204';
 
-
-// export const exerciseOptions = {
-//   method: 'GET',
-//   headers: {
-//     'X-RapidAPI-Key': rapidApiKey,
-//     'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com'
-//   }
-// };
-
 export const exerciseOptions = {
   method: 'GET',
   headers: {
     'x-rapidapi-key': rapidApiKey,
-    'x-rapidapi-host': 'workoutdb1.p.rapidapi.com'
+    'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
   }
 };
 

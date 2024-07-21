@@ -13,7 +13,7 @@ const Exercises = ({ exercises, setExercises, bodyPart, equipment }) => {
       const fetchExercisesData = async () => {
          setLoading(true);
          const exercisesData = await fetchData(
-            "https://workoutdb1.p.rapidapi.com/exercise/all",
+            "https://exercisedb.p.rapidapi.com/exercises?limit=0&offset=0",
             exerciseOptions
          );
          setExercises(exercisesData);

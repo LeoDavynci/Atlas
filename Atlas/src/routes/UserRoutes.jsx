@@ -16,11 +16,12 @@ const UserRoutes = () => {
             <Route path="/dashboard" element={<HomePage />} />
             <Route path="/workouts" element={<WorkoutsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/explore" element={<SearchPage />} />
             <Route path="/*" element={<HomePage />} />
          </Route>
          <Route path="/session" element={<SessionPage />} />
-         <Route path="/explore" element={<SearchPage />} />
-         <Route path="/exercise/id/:id" element={<ExerciseDetail />} />
+
+         <Route path="/exercises/exercise/:id" element={<ExerciseDetail />} />
       </Routes>
    );
 };
