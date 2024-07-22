@@ -1,8 +1,8 @@
 import NavBar from "@/components/NavBar";
 import PageLayout from "@/PageLayout";
-import ExerciseDetail from "@/pages/ExerciseDetail";
 import HomePage from "@/pages/HomePage";
 import ProfilePage from "@/pages/ProfilePage";
+import ExerciseDetail from "@/pages/SearchPage/ExerciseDetail";
 import SearchPage from "@/pages/SearchPage/SearchPage";
 import SessionPage from "@/pages/SessionPage/SessionPage";
 import NewRoutinePage from "@/pages/WorkoutsPage/NewRoutinePage ";

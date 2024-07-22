@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { exerciseOptions, fetchData, youtubeOptions } from "@/utils/fetchData";
-import Detail from "../components/Detail";
-import ExerciseVideos from "../components/ExerciseVideos";
-import SimilarExercises from "../components/SimilarExercises";
+import Detail from "../../components/Detail";
+import ExerciseVideos from "../../components/ExerciseVideos";
+import SimilarExercises from "../../components/SimilarExercises";
 
 const ExerciseDetail = () => {
    const [exerciseDetail, setExerciseDetail] = useState({});
