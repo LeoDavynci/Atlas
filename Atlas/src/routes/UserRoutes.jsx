@@ -5,7 +5,8 @@ import HomePage from "@/pages/HomePage";
 import ProfilePage from "@/pages/ProfilePage";
 import SearchPage from "@/pages/SearchPage/SearchPage";
 import SessionPage from "@/pages/SessionPage/SessionPage";
-import WorkoutsPage from "@/pages/WorkoutsPage";
+import NewRoutinePage from "@/pages/WorkoutsPage/NewRoutinePage ";
+import WorkoutsPage from "@/pages/WorkoutsPage/WorkoutsPage";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -13,15 +14,15 @@ const UserRoutes = () => {
    return (
       <Routes>
          <Route element={<PageLayout />}>
-            <Route path="/dashboard" element={<HomePage />} />
+            {/* <Route path="/dashboard" element={<HomePage />} /> */}
+            <Route path="/home" element={<SearchPage />} />
             <Route path="/workouts" element={<WorkoutsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/explore" element={<SearchPage />} />
-            <Route path="/*" element={<HomePage />} />
+            <Route path="/*" element={<SearchPage />} />
          </Route>
          <Route path="/session" element={<SessionPage />} />
-
          <Route path="/exercises/exercise/:id" element={<ExerciseDetail />} />
+         <Route path="/new-routine" element={<NewRoutinePage />} />
       </Routes>
    );
 };

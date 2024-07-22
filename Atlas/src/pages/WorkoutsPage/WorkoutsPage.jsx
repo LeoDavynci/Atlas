@@ -1,11 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { UserAuth } from "@/context/AuthContext";
-import React from "react";
+import { useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoIosSearch } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 const WorkoutsPage = () => {
    const { user } = UserAuth();
+
+   const navigate = useNavigate();
+
+   const handleNewRoutine = () => {
+      navigate("/new-routine");
+   };
 
    return (
       <>
@@ -14,13 +21,12 @@ const WorkoutsPage = () => {
                <h1 className="mfont1">WORKOUT</h1>
             </div>
             <div className="flex gap-2 mt-4">
-               <Button className="flex gap-2 h-14 flex-1 ">
+               <Button
+                  className="flex gap-2 h-14 flex-1 "
+                  onClick={handleNewRoutine}
+               >
                   <IoIosAddCircleOutline className="box30" />
                   <p className="mfont4">New Routine</p>
-               </Button>
-               <Button className="flex gap-2 h-14 flex-1">
-                  <IoIosSearch className="box30" />
-                  <p className="mfont4">Explore</p>
                </Button>
             </div>
             <div className="mt-8">

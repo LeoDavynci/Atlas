@@ -12,7 +12,7 @@ const SearchPage = () => {
       <>
          {/*  Search Bar + Horizontal Scroll Bar */}
          <div className="z-10 flex flex-col fixed top-0 left-0 right-0 h-68 w-full bg-custom-accent rounded-b-lg p-6 outershadow">
-            <h1 className="mfont1">Explore</h1>
+            <h1 className="mfont1">Home</h1>
 
             <SearchExercises
                setExercises={setExercises}
