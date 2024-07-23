@@ -18,6 +18,7 @@ const UserRoutes = () => {
             <Route path="/home" element={<SearchPage />} />
             <Route path="/workouts" element={<WorkoutsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/dash" element={<HomePage />} />
             <Route path="/*" element={<SearchPage />} />
          </Route>
          <Route path="/session/:routineId" element={<SessionPage />} />
