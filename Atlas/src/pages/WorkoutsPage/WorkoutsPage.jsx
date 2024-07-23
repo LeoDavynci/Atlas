@@ -46,10 +46,10 @@ const WorkoutsPage = () => {
       setRoutines(routines.filter((routine) => routine.id !== id));
    };
 
-   const handleEditRoutine = (id) => {
-      // Navigate to edit page or open edit modal
-      navigate(`/edit-routine/${id}`);
-   };
+   // const handleEditRoutine = (id) => {
+   //    // Navigate to edit page or open edit modal
+   //    navigate(`/edit-routine/${id}`);
+   // };
 
    const handleBeginWorkout = (routine) => {
       // Navigate to workout page or start workout
@@ -76,7 +76,7 @@ const WorkoutsPage = () => {
             {routines.map((routine) => (
                <div
                   key={routine.id}
-                  className="flex-col w-full h-40 light rounded-md mt-4 p-3 pt-4"
+                  className="flex-col w-full h-auto light rounded-md mt-4 p-3 pt-4"
                >
                   <h1 className="mfont2">{routine.name}</h1>
                   <p className="mfont49 mt-2">
@@ -85,9 +85,9 @@ const WorkoutsPage = () => {
                   <div className="mt-2 flex gap-2">
                      <Button
                         className="graybutton w-1/3 mfont3"
-                        onClick={() => handleEditRoutine(routine.id)}
+                        onClick={() => handleDeleteRoutine(routine.id)}
                      >
-                        Edit
+                        Delete
                      </Button>
                      <Button
                         className="accentbutton w-2/3 mfont35"

@@ -72,6 +72,13 @@ const NewRoutinePage = () => {
       setExercises(newExercises);
    };
 
+   const handleDeleteExercise = (exerciseIndex) => {
+      const newExercises = exercises.filter(
+         (_, index) => index !== exerciseIndex
+      );
+      setExercises(newExercises);
+   };
+
    const handleSaveRoutine = async () => {
       if (!user) {
          console.error("No user logged in");
@@ -94,9 +101,13 @@ const NewRoutinePage = () => {
       }
    };
 
+   const cancleCreateRoutine = () => {
+      navigate("/workouts");
+   };
+
    return (
       <div className="">
-         <div className="accent rounded-b-lg p-6">
+         <div className="accent rounded-b-lg p-6 fixed top-0 left-0 right-0 z-10 outershadow">
             <h1 className="mfont1">Create New Routine</h1>
             <Input
                value={routineName}
@@ -105,62 +116,22 @@ const NewRoutinePage = () => {
                className="mt-4 rounded-sm"
             />
 
-            <div className="flex flex-row gap-3">
-               <Drawer
-                  open={isDrawerOpen}
-                  onOpenChange={setIsDrawerOpen}
-                  className="accent"
-               >
-                  <DrawerTrigger asChild>
-                     <Button className="mt-4 w-1/2">Add Exercise</Button>
-                  </DrawerTrigger>
-                  <DrawerContent className="h-[80vh] p-6 accent border-none rounded-t-lg">
-                     <DrawerHeader className="mfont45 p-0 pb-6">
-                        <DrawerTitle></DrawerTitle>
-                        <DrawerDescription></DrawerDescription>
-                        <Input
-                           value={searchTerm}
-                           onChange={(e) => setSearchTerm(e.target.value)}
-                           placeholder="Search exercises..."
-                           className="rounded-sm"
-                        />
-                     </DrawerHeader>
-                     <div className=" overflow-y-auto">
-                        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
-                           {filteredExercises.map((exercise, index) => (
-                              <ExerciseCard
-                                 key={`${exercise.id}-${index}`}
-                                 exercise={exercise}
-                                 onClick={() => handleAddExercise(exercise)}
-                                 noClick={true}
-                              />
-                           ))}
-                        </div>
+            <div className="flex flex-row mt-6 gap-3">
+               <Button className="w-1/2" onClick={cancleCreateRoutine}>
+                  Cancel
+               </Button>
 
-                        {/* {filteredExercises.map((exercise) => (
-                        <Button
-                           key={exercise.id}
-                           onClick={() => handleAddExercise(exercise)}
-                           className="w-full text-left mb-2"
-                        >
-                           {exercise.name}
-                        </Button>
-                     ))} */}
-                     </div>
-                  </DrawerContent>
-               </Drawer>
-
-               <Button onClick={handleSaveRoutine} className="mt-4 w-1/2">
+               <Button onClick={handleSaveRoutine} className=" w-1/2">
                   Save Routine
                </Button>
             </div>
          </div>
 
-         <div className="p-6">
+         <div className="p-6 pt-56">
             {exercises.map((exercise, exerciseIndex) => (
                <div
                   key={exerciseIndex}
-                  className="flex flex-col lightbox p-3 mb-4"
+                  className="flex flex-col lightbox p-3 mb-4 "
                >
                   <div className="flex flex-row gap-2 items-center mb-4">
                      <img
@@ -182,12 +153,14 @@ const NewRoutinePage = () => {
                         </div>
                      </div>
                   </div>
+
                   <div className="grid grid-cols-4 gap-2 mb-2">
                      <div className="text-center mfont4b">Set</div>
                      <div className="text-left mfont4b">Weight</div>
                      <div className="text-left mfont4b">Reps</div>
                      <div></div>
                   </div>
+
                   {exercise.sets.map((set, setIndex) => (
                      <div
                         key={setIndex}
@@ -237,14 +210,58 @@ const NewRoutinePage = () => {
                         </div>
                      </div>
                   ))}
-                  <Button
-                     onClick={() => handleAddSet(exerciseIndex)}
-                     className="mt-2 w-full accentbutton"
-                  >
-                     Add Set
-                  </Button>
+                  <div className="flex flex-row gap-2 mt-2">
+                     <Button
+                        onClick={() => handleAddSet(exerciseIndex)}
+                        className=" w-full accentbutton"
+                     >
+                        Add Set
+                     </Button>
+                     <Button
+                        onClick={() => handleDeleteExercise(exerciseIndex)}
+                        className="graybutton"
+                     >
+                        Delete Exercise
+                     </Button>
+                  </div>
                </div>
             ))}
+
+            <Drawer
+               open={isDrawerOpen}
+               onOpenChange={setIsDrawerOpen}
+               className="accent"
+            >
+               <DrawerTrigger asChild>
+                  <Button className="accentbutton w-full h-12 mt-2">
+                     Add Exercise
+                  </Button>
+               </DrawerTrigger>
+               <DrawerContent className="h-[80vh] p-6 accent border-none rounded-t-lg">
+                  <DrawerHeader className="mfont45 p-0 pb-6">
+                     <DrawerTitle></DrawerTitle>
+                     <DrawerDescription></DrawerDescription>
+                     <Input
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search exercises..."
+                        className="rounded-sm"
+                     />
+                  </DrawerHeader>
+                  <div className=" overflow-y-auto">
+                     <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                        {filteredExercises.map((exercise, index) => (
+                           <ExerciseCard
+                              key={`${exercise.id}-${index}`}
+                              exercise={exercise}
+                              onClick={() => handleAddExercise(exercise)}
+                              noClick={true}
+                           />
+                        ))}
+                     </div>
+                  </div>
+               </DrawerContent>
+            </Drawer>
          </div>
       </div>
    );

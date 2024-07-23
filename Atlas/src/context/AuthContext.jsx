@@ -21,7 +21,7 @@ export default function AuthContextProvider({ children }) {
                setUser(doc.data());
             });
 
-            console.log("It ran again");
+            console.log("User Authenticated");
          } else {
             setIsLoggedOut(true);
          }
