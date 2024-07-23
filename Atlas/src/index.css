@@ -54,11 +54,17 @@
 .accentbutton {
   @apply bg-custom-accent text-custom-light hover:bg-custom-accent2 rounded-sm 
 }
+.accentbutton2{
+  @apply  bg-custom-accent2 text-custom-light hover:bg-custom-accent rounded-sm 
+}
 .lightbutton {
   @apply bg-custom-light text-black hover:bg-custom-light2 rounded-md
 }
 .graybutton {
   @apply bg-custom-light2 text-black hover:bg-custom-light3 rounded-sm
+}
+.graybutton2 {
+  @apply bg-custom-light3 text-black hover:bg-custom-light2 rounded-sm
 }
 
 /* Divs */

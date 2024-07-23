@@ -22,10 +22,29 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoTimeOutline } from "react-icons/io5";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { readData, updateData } from "@/functions/crud";
+import { createData, readData, updateData } from "@/functions/crud";
 import { UserAuth } from "@/context/AuthContext";
 import { fetchData, exerciseOptions } from "@/utils/fetchData";
 import ExerciseCard from "@/components/ExerciseCard";
+
+const formatTime = (seconds) => {
+   const hours = Math.floor(seconds / 3600);
+   const minutes = Math.floor((seconds % 3600) / 60);
+   const remainingSeconds = seconds % 60;
+
+   const parts = [];
+   if (hours > 0) parts.push(`${hours}h`);
+   if (minutes > 0) parts.push(`${minutes}m`);
+   if (remainingSeconds > 0 || parts.length === 0)
+      parts.push(`${remainingSeconds}s`);
+
+   return parts.join(" ");
+};
+
+const formatDate = (date) => {
+   const options = { year: "numeric", month: "long", day: "numeric" };
+   return date.toLocaleDateString("en-US", options);
+};
 
 const SessionPage = () => {
    const { routineId } = useParams();
@@ -192,6 +211,53 @@ const SessionPage = () => {
          const updatedRoutine = { ...routine, exercises: exercises };
          await updateData("routines", routineId, updatedRoutine);
          console.log("Workout finished and saved successfully");
+
+         const loggedExercises = exercises.map((exercise) => {
+            const completeSets = exercise.sets.filter(
+               (set) => set.weight > 0 && set.reps > 0
+            ).length;
+            const totalReps = exercise.sets.reduce(
+               (total, set) => total + (set.reps > 0 ? set.reps : 0),
+               0
+            );
+
+            return {
+               name: exercise.name,
+               // bodyPart: exercise.bodyPart,
+               // target: exercise.target,
+               // sets: exercise.sets.map((set) => {
+               //    return {
+               //       weight: set.weight,
+               //       reps: set.reps,
+               //    };
+               // }),
+               gifUrl: exercise.gifUrl,
+               completeSets: completeSets,
+               totalReps: totalReps,
+            };
+         });
+
+         // Get current date and time
+         const now = new Date();
+         const dateString = formatDate(now);
+
+         const finishedData = {
+            name: routine.name,
+            exercises: loggedExercises,
+            userId: user.uid,
+            date: dateString,
+            time: formatTime(duration),
+            sets: totalSets,
+            volume: totalVolume,
+         };
+
+         try {
+            await createData("saved", finishedData);
+            console.log("Workout logged successfully");
+         } catch (error) {
+            console.error("Error saving workout:", error);
+         }
+
          navigate("/workouts");
       } catch (error) {
          console.error("Error saving workout:", error);
@@ -259,7 +325,12 @@ const SessionPage = () => {
                         </div>
                         <div className="flex gap-4">
                            {isTimerRunning ? (
-                              <Button onClick={handleStopTimer}>Stop</Button>
+                              <Button
+                                 className="accentbutton2 mfont45"
+                                 onClick={handleStopTimer}
+                              >
+                                 Stop
+                              </Button>
                            ) : (
                               <Button
                                  className="accentbutton mfont45"
