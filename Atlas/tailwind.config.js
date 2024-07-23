@@ -30,6 +30,7 @@ module.exports = {
           light3: '#BCBCBC',
           accent: '#685AAB',
           accent2: '#594D93',
+          accent0: '#8879df',
         },
    
 

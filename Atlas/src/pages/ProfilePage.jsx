@@ -17,9 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import usePreviewImg from "@/hooks/usePreviewImg";
-import Resizer from "react-image-file-resizer";
-import Compressor from "compressorjs";
+
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db, storage } from "@/firebase/firebase";
 import { MdLogout, MdEdit } from "react-icons/md";
@@ -33,8 +31,6 @@ const ProfilePage = () => {
       split: "",
    });
 
-   const fileRef = useRef(null);
-   const { selectedFile, setSelectedFile } = usePreviewImg();
    const [saves, setSaves] = useState([]);
 
    useEffect(() => {

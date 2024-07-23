@@ -26,6 +26,8 @@ import { createData, readData, updateData } from "@/functions/crud";
 import { UserAuth } from "@/context/AuthContext";
 import { fetchData, exerciseOptions } from "@/utils/fetchData";
 import ExerciseCard from "@/components/ExerciseCard";
+import { Checkbox } from "@/components/ui/checkbox";
+import { MdOutlineExitToApp } from "react-icons/md";
 
 const formatTime = (seconds) => {
    const hours = Math.floor(seconds / 3600);
@@ -66,6 +68,9 @@ const SessionPage = () => {
    const [isTimerRunning, setIsTimerRunning] = useState(false);
    const timerIntervalRef = useRef(null);
    const durationIntervalRef = useRef(null);
+   const [deleteConfirmationIndex, setDeleteConfirmationIndex] = useState(null);
+
+   const [loading, setLoading] = useState(true);
 
    useEffect(() => {
       durationIntervalRef.current = setInterval(() => {
@@ -114,23 +119,27 @@ const SessionPage = () => {
    }, [routineId]);
 
    useEffect(() => {
-      // Fetch available exercises when component mounts
-      const fetchExercises = async () => {
+      const fetchExercisesData = async () => {
+         setLoading(true);
          const exerciseData = await fetchData(
             "https://exercisedb.p.rapidapi.com/exercises?limit=0&offset=0",
             exerciseOptions
          );
          setAvailableExercises(exerciseData);
+         setFilteredExercises(exerciseData);
+         setLoading(false);
       };
-      fetchExercises();
+      fetchExercisesData();
    }, []);
 
    useEffect(() => {
-      // Filter exercises based on search term
-      const filtered = availableExercises.filter((exercise) =>
-         exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredExercises(filtered);
+      if (availableExercises.length > 0) {
+         const filtered = availableExercises.filter((exercise) =>
+            exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
+         );
+         setFilteredExercises(filtered);
+         setCurrentPage(1);
+      }
    }, [searchTerm, availableExercises]);
 
    const formatTime = (seconds) => {
@@ -177,7 +186,7 @@ const SessionPage = () => {
    const handleAddExercise = (exercise) => {
       setExercises([
          ...exercises,
-         { ...exercise, sets: [{ weight: 0, reps: 0 }] },
+         { ...exercise, sets: [{ weight: 0, reps: 0, completed: false }] },
       ]);
       setIsDrawerOpen(false);
    };
@@ -195,15 +204,33 @@ const SessionPage = () => {
    };
 
    const handleRemoveSet = (exerciseIndex, setIndex) => {
-      const newExercises = [...exercises];
-      newExercises[exerciseIndex].sets.splice(setIndex, 1);
-      setExercises(newExercises);
+      if (deleteConfirmationIndex === `${exerciseIndex}-${setIndex}`) {
+         const newExercises = [...exercises];
+         newExercises[exerciseIndex].sets.splice(setIndex, 1);
+         setExercises(newExercises);
+         setDeleteConfirmationIndex(null);
+      } else {
+         setDeleteConfirmationIndex(`${exerciseIndex}-${setIndex}`);
+         // Set a timeout to reset the confirmation state after 3 seconds
+         setTimeout(() => setDeleteConfirmationIndex(null), 3000);
+      }
    };
 
    const handleDeleteExercise = (exerciseIndex) => {
       setExercises((prevExercises) =>
          prevExercises.filter((_, index) => index !== exerciseIndex)
       );
+   };
+
+   const handleToggleSetCompletion = (exerciseIndex, setIndex) => {
+      const newExercises = [...exercises];
+      newExercises[exerciseIndex].sets[setIndex].completed =
+         !newExercises[exerciseIndex].sets[setIndex].completed;
+      setExercises(newExercises);
+   };
+
+   const handleDiscard = () => {
+      navigate("/workouts");
    };
 
    const handleFinishWorkout = async () => {
@@ -289,81 +316,99 @@ const SessionPage = () => {
                </div>
             </div>
             <div className="flex flex-row justify-between h-16 pt-2 mfont4 gap-3">
-               <Dialog
-                  open={isTimerDialogOpen}
-                  onOpenChange={setIsTimerDialogOpen}
-               >
-                  <DialogTrigger asChild>
-                     <Button className="lightbutton h-full w-1/2">
-                        <div className="flex flex-row justify-center items-center p-2 gap-1 ">
-                           <IoTimeOutline className="h-8 w-8" />
-                           <p>Timer</p>
-                        </div>
-                     </Button>
-                  </DialogTrigger>
-                  <DialogContent className="lightbox h-auto w-[60%]">
-                     <DialogHeader>
-                        <DialogTitle className="mfont4">Rest Timer</DialogTitle>
-                     </DialogHeader>
-                     <div className="flex flex-col items-center gap-4">
-                        <div className="mfont15">{formatTime(restTime)}</div>
-                        <div className="flex gap-4">
-                           <Button
-                              onClick={handleDecrementTimer}
-                              disabled={isTimerRunning}
-                              className="mfont3"
-                           >
-                              <FiMinus />
-                           </Button>
-                           <Button
-                              onClick={handleIncrementTimer}
-                              disabled={isTimerRunning}
-                              className="mfont3"
-                           >
-                              <FiPlus />
-                           </Button>
-                        </div>
-                        <div className="flex gap-4">
-                           {isTimerRunning ? (
-                              <Button
-                                 className="accentbutton2 mfont45"
-                                 onClick={handleStopTimer}
-                              >
-                                 Stop
-                              </Button>
-                           ) : (
-                              <Button
-                                 className="accentbutton mfont45"
-                                 onClick={handleStartTimer}
-                              >
-                                 Start
-                              </Button>
-                           )}
-                           <Button
-                              className="graybutton mfont4"
-                              onClick={handleResetTimer}
-                           >
-                              Reset
-                           </Button>
-                        </div>
+               <div className="h-full w-1/3 ">
+                  <Button
+                     className="lightbutton h-full w-full p-1"
+                     onClick={handleDiscard}
+                  >
+                     <div className="flex flex-row justify-center items-center p-1 gap-1 ">
+                        <MdOutlineExitToApp className="h-6 w-6" />
+                        <p>Exit</p>
                      </div>
-                  </DialogContent>
-               </Dialog>
+                  </Button>
+               </div>
 
-               <Button
-                  onClick={handleFinishWorkout}
-                  className="lightbutton h-full w-1/2"
-               >
-                  <div className="flex flex-row justify-center items-center p-2 gap-1 ">
-                     <IoMdCheckmarkCircleOutline className="h-8 w-8" />
-                     <p>Finish</p>
-                  </div>
-               </Button>
+               <div className="h-full w-1/3 ">
+                  <Dialog
+                     open={isTimerDialogOpen}
+                     onOpenChange={setIsTimerDialogOpen}
+                  >
+                     <DialogTrigger asChild>
+                        <Button className="lightbutton h-full w-full">
+                           <div className="flex flex-row justify-center items-center p-2 gap-1 ">
+                              <IoTimeOutline className="h-6 w-6" />
+                              <p>Timer</p>
+                           </div>
+                        </Button>
+                     </DialogTrigger>
+                     <DialogContent className="lightbox h-auto w-[60%]">
+                        <DialogHeader>
+                           <DialogTitle className="mfont4">
+                              Rest Timer
+                           </DialogTitle>
+                        </DialogHeader>
+                        <div className="flex flex-col items-center gap-4">
+                           <div className="mfont15">{formatTime(restTime)}</div>
+                           <div className="flex gap-4">
+                              <Button
+                                 onClick={handleDecrementTimer}
+                                 disabled={isTimerRunning}
+                                 className="mfont3"
+                              >
+                                 <FiMinus />
+                              </Button>
+                              <Button
+                                 onClick={handleIncrementTimer}
+                                 disabled={isTimerRunning}
+                                 className="mfont3"
+                              >
+                                 <FiPlus />
+                              </Button>
+                           </div>
+                           <div className="flex gap-4">
+                              {isTimerRunning ? (
+                                 <Button
+                                    className="accentbutton2 mfont45"
+                                    onClick={handleStopTimer}
+                                 >
+                                    Stop
+                                 </Button>
+                              ) : (
+                                 <Button
+                                    className="accentbutton mfont45"
+                                    onClick={handleStartTimer}
+                                 >
+                                    Start
+                                 </Button>
+                              )}
+                              <Button
+                                 className="graybutton mfont4"
+                                 onClick={handleResetTimer}
+                              >
+                                 Reset
+                              </Button>
+                           </div>
+                        </div>
+                     </DialogContent>
+                  </Dialog>
+               </div>
+
+               <div className="h-full w-1/3 ">
+                  <Button
+                     onClick={handleFinishWorkout}
+                     className="lightbutton h-full w-full"
+                  >
+                     <div className="flex flex-row justify-center items-center p-2 gap-1 ">
+                        <IoMdCheckmarkCircleOutline className="h-6 w-6" />
+                        <p>Finish</p>
+                     </div>
+                  </Button>
+               </div>
             </div>
          </div>
 
          {/* Content */}
-         <div className="p-6 pt-64">
+         <div className="p-6 pt-52">
             {exercises.map((exercise, exerciseIndex) => (
                <div
                   key={exerciseIndex}
@@ -390,7 +435,7 @@ const SessionPage = () => {
                      </div>
                   </div>
 
-                  <div className="grid grid-cols-4 gap-2 mb-2">
+                  <div className="grid grid-cols-5 gap-2 mb-2">
                      <div className="text-center mfont4b">Set</div>
                      <div className="text-left mfont4b">Weight</div>
                      <div className="text-left mfont4b">Reps</div>
@@ -400,7 +445,9 @@ const SessionPage = () => {
                   {exercise.sets.map((set, setIndex) => (
                      <div
                         key={setIndex}
-                        className="grid grid-cols-4 gap-2 mb-2 items-center"
+                        className={`grid grid-cols-5 gap-2 py-1 mb-1 items-center rounded-sm ${
+                           set.completed ? "bg-custom-accent" : ""
+                        }`}
                      >
                         <div className="text-center mfont4b">
                            {setIndex + 1}
@@ -417,7 +464,7 @@ const SessionPage = () => {
                               )
                            }
                            placeholder="Weight"
-                           className="rounded-sm pl-2 w-3/4 border-neutral-300"
+                           className="rounded-sm pl-2 w-full border-custom-accent"
                         />
                         <Input
                            type="number"
@@ -431,17 +478,44 @@ const SessionPage = () => {
                               )
                            }
                            placeholder="Reps"
-                           className="rounded-sm pl-2 w-3/4 border-neutral-300"
+                           className="rounded-sm pl-2 w-full border-custom-accent"
                         />
-                        <div className="ml-6 h-full">
+                        <div className="col-span-2 flex justify-end pr-6 gap-2">
                            <Button
                               onClick={() =>
                                  handleRemoveSet(exerciseIndex, setIndex)
                               }
-                              className="p-1 h-full w-10 transition-colors duration-200 ease-in-out hover:bg-custom-accent "
+                              className={`p-1 h-30 w-auto transition-colors duration-200 ease-in-out ${
+                                 deleteConfirmationIndex ===
+                                 `${exerciseIndex}-${setIndex}`
+                                    ? "bg-red-500 hover:bg-red-600"
+                                    : "hover:bg-custom-accent"
+                              }`}
                               variant="destructive"
                            >
-                              <FaRegTrashAlt className="w-5 h-5" />
+                              {deleteConfirmationIndex ===
+                              `${exerciseIndex}-${setIndex}` ? (
+                                 <span className="text-xs whitespace-nowrap">
+                                    Confirm
+                                 </span>
+                              ) : (
+                                 <FaRegTrashAlt className="w-5 h-5" />
+                              )}
+                           </Button>
+                           <Button
+                              onClick={() =>
+                                 handleToggleSetCompletion(
+                                    exerciseIndex,
+                                    setIndex
+                                 )
+                              }
+                              className={`p-1 h-full w-10 transition-colors duration-200 ease-in-out ${
+                                 set.completed
+                                    ? "bg-custom-accent hover:bg-custom-accent"
+                                    : "bg-custom-light hover:bg-custom-accent"
+                              }`}
+                           >
+                              <IoMdCheckmarkCircleOutline className="w-5 h-5" />
                            </Button>
                         </div>
                      </div>
@@ -463,30 +537,23 @@ const SessionPage = () => {
                </div>
             ))}
 
-            <Drawer
-               open={isDrawerOpen}
-               onOpenChange={setIsDrawerOpen}
-               className="accent"
-            >
-               <DrawerTrigger asChild>
-                  <Button className="accentbutton w-full h-12 mt-2">
-                     Add Exercise
-                  </Button>
-               </DrawerTrigger>
-               <DrawerContent className="h-[80vh] p-6 accent border-none rounded-t-lg">
-                  <DrawerHeader className="mfont45 p-0 pb-6">
-                     <DrawerTitle></DrawerTitle>
-                     <DrawerDescription></DrawerDescription>
-                     <Input
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search exercises..."
-                        className="rounded-sm"
-                     />
-                  </DrawerHeader>
-                  <div className=" overflow-y-auto">
+            <DrawerContent className="h-[80vh] p-6 accent border-none rounded-t-lg">
+               <DrawerHeader className="mfont45 p-0 pb-6">
+                  <DrawerTitle></DrawerTitle>
+                  <DrawerDescription></DrawerDescription>
+                  <Input
+                     value={searchTerm}
+                     onChange={(e) => setSearchTerm(e.target.value)}
+                     placeholder="Search exercises..."
+                     className="rounded-sm"
+                  />
+               </DrawerHeader>
+               {loading ? (
+                  <div>Loading...</div>
+               ) : (
+                  <div className="overflow-y-auto">
                      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
-                        {filteredExercises.map((exercise, index) => (
+                        {currentExercises.map((exercise, index) => (
                            <ExerciseCard
                               key={`${exercise.id}-${index}`}
                               exercise={exercise}
@@ -495,9 +562,28 @@ const SessionPage = () => {
                            />
                         ))}
                      </div>
+                     <div className="flex justify-center mt-4 gap-4 items-center">
+                        <Button
+                           onClick={() => paginate(currentPage - 1)}
+                           disabled={currentPage === 1}
+                           className="light rounded-sm"
+                        >
+                           ←
+                        </Button>
+                        <span className="mfont35">
+                           Page {currentPage} of {totalPages}
+                        </span>
+                        <Button
+                           onClick={() => paginate(currentPage + 1)}
+                           disabled={currentPage === totalPages}
+                           className="light rounded-sm"
+                        >
+                           →
+                        </Button>
+                     </div>
                   </div>
-               </DrawerContent>
-            </Drawer>
+               )}
+            </DrawerContent>
          </div>
       </>
    );

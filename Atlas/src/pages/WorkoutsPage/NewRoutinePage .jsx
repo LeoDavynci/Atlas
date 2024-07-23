@@ -23,28 +23,51 @@ const NewRoutinePage = () => {
    const [searchTerm, setSearchTerm] = useState("");
    const [filteredExercises, setFilteredExercises] = useState([]);
    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+   const [currentPage, setCurrentPage] = useState(1);
+   const [exercisesPerPage] = useState(24);
+   const [loading, setLoading] = useState(true);
    const navigate = useNavigate();
    const { user } = UserAuth();
 
    useEffect(() => {
-      // Fetch available exercises when component mounts
-      const fetchExercises = async () => {
+      const fetchExercisesData = async () => {
+         setLoading(true);
          const exerciseData = await fetchData(
             "https://exercisedb.p.rapidapi.com/exercises?limit=0&offset=0",
             exerciseOptions
          );
          setAvailableExercises(exerciseData);
+         setFilteredExercises(exerciseData);
+         setLoading(false);
       };
-      fetchExercises();
+      fetchExercisesData();
    }, []);
 
    useEffect(() => {
-      // Filter exercises based on search term
-      const filtered = availableExercises.filter((exercise) =>
-         exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredExercises(filtered);
+      if (availableExercises.length > 0) {
+         const filtered = availableExercises.filter((exercise) =>
+            exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
+         );
+         setFilteredExercises(filtered);
+         setCurrentPage(1);
+      }
    }, [searchTerm, availableExercises]);
+
+   // Get current exercises
+   const indexOfLastExercise = currentPage * exercisesPerPage;
+   const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
+   const currentExercises = filteredExercises.slice(
+      indexOfFirstExercise,
+      indexOfLastExercise
+   );
+
+   // Calculate total pages
+   const totalPages = Math.ceil(filteredExercises.length / exercisesPerPage);
+
+   // Change page
+   const paginate = (pageNumber) => {
+      setCurrentPage(pageNumber);
+   };
 
    const handleAddExercise = (exercise) => {
       setExercises([
@@ -62,7 +85,7 @@ const NewRoutinePage = () => {
 
    const handleAddSet = (exerciseIndex) => {
       const newExercises = [...exercises];
-      newExercises[exerciseIndex].sets.push({ weight: 0, reps: 0 });
+      newExercises[exerciseIndex].sets.push({ weight: "", reps: "" });
       setExercises(newExercises);
    };
 
@@ -113,7 +136,7 @@ const NewRoutinePage = () => {
                value={routineName}
                onChange={(e) => setRoutineName(e.target.value)}
                placeholder="Routine Name"
-               className="mt-4 rounded-sm"
+               className="mt-4 rounded-sm border-custom-accent2"
             />
 
             <div className="flex flex-row mt-6 gap-3">
@@ -248,18 +271,41 @@ const NewRoutinePage = () => {
                         className="rounded-sm"
                      />
                   </DrawerHeader>
-                  <div className=" overflow-y-auto">
-                     <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
-                        {filteredExercises.map((exercise, index) => (
-                           <ExerciseCard
-                              key={`${exercise.id}-${index}`}
-                              exercise={exercise}
-                              onClick={() => handleAddExercise(exercise)}
-                              noClick={true}
-                           />
-                        ))}
+                  {loading ? (
+                     <div>Loading...</div>
+                  ) : (
+                     <div className="overflow-y-auto">
+                        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                           {currentExercises.map((exercise, index) => (
+                              <ExerciseCard
+                                 key={`${exercise.id}-${index}`}
+                                 exercise={exercise}
+                                 onClick={() => handleAddExercise(exercise)}
+                                 noClick={true}
+                              />
+                           ))}
+                        </div>
+                        <div className="flex justify-center mt-4 gap-4 items-center">
+                           <Button
+                              onClick={() => paginate(currentPage - 1)}
+                              disabled={currentPage === 1}
+                              className="light rounded-sm"
+                           >
+                              ←
+                           </Button>
+                           <span className="mfont35">
+                              Page {currentPage} of {totalPages}
+                           </span>
+                           <Button
+                              onClick={() => paginate(currentPage + 1)}
+                              disabled={currentPage === totalPages}
+                              className="light rounded-sm"
+                           >
+                              →
+                           </Button>
+                        </div>
                      </div>
-                  </div>
+                  )}
                </DrawerContent>
             </Drawer>
          </div>

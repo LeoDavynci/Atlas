@@ -25,7 +25,7 @@ const SignUp = () => {
       email,
       split,
       streak: 0,
-      workouts: [],
+      workouts: 0,
       profilePicURL,
       createdAt: new Date().toISOString(),
    };
