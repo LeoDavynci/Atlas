@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const rapidApiKey = 'c674a89694mshf25209a7a9ba5e7p10164cjsnc88b4361f204';
+const rapidApiKey = '0624a11197msh87eab60639dc52dp14ae0bjsn01a8e48343fc';
 
 export const exerciseOptions = {
   method: 'GET',

@@ -252,7 +252,7 @@ const SessionPage = () => {
          };
 
          try {
-            await createData("saved", finishedData);
+            await createData("saves", finishedData);
             console.log("Workout logged successfully");
          } catch (error) {
             console.error("Error saving workout:", error);
