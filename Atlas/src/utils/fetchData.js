@@ -1,7 +1,8 @@
 
 import axios from 'axios';
 
-const rapidApiKey = 'c674a89694mshf25209a7a9ba5e7p10164cjsnc88b4361f204';
+const rapidApiKey = import.meta.env.VITE_RAPID_API_KEY;
+
 
 export const exerciseOptions = {
   method: 'GET',
