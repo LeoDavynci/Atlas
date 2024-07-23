@@ -20,7 +20,7 @@ const UserRoutes = () => {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/*" element={<SearchPage />} />
          </Route>
-         <Route path="/session" element={<SessionPage />} />
+         <Route path="/session/:routineId" element={<SessionPage />} />
          <Route path="/exercises/exercise/:id" element={<ExerciseDetail />} />
          <Route path="/new-routine" element={<NewRoutinePage />} />
       </Routes>

@@ -1,31 +1,288 @@
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import { Input } from "@/components/ui/input";
+import {
+   Drawer,
+   DrawerContent,
+   DrawerHeader,
+   DrawerDescription,
+   DrawerTitle,
+   DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
+   Dialog,
+   DialogContent,
+   DialogHeader,
+   DialogTitle,
+   DialogTrigger,
+} from "@/components/ui/dialog";
+import { FiPlus, FiMinus } from "react-icons/fi";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoTimeOutline } from "react-icons/io5";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { readData, updateData } from "@/functions/crud";
+import { UserAuth } from "@/context/AuthContext";
+import { fetchData, exerciseOptions } from "@/utils/fetchData";
+import ExerciseCard from "@/components/ExerciseCard";
 
 const SessionPage = () => {
+   const { routineId } = useParams();
+   const [routine, setRoutine] = useState(null);
+   const [error, setError] = useState(null);
+   const [exercises, setExercises] = useState([]);
+   const [availableExercises, setAvailableExercises] = useState([]);
+   const [searchTerm, setSearchTerm] = useState("");
+   const [filteredExercises, setFilteredExercises] = useState([]);
+   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+   const navigate = useNavigate();
+   const { user } = UserAuth();
+
+   const [duration, setDuration] = useState(0);
+   const [totalSets, setTotalSets] = useState(0);
+   const [totalVolume, setTotalVolume] = useState(0);
+   const [isTimerDialogOpen, setIsTimerDialogOpen] = useState(false);
+   const [restTime, setRestTime] = useState(0);
+   const [isTimerRunning, setIsTimerRunning] = useState(false);
+   const timerIntervalRef = useRef(null);
+   const durationIntervalRef = useRef(null);
+
+   useEffect(() => {
+      durationIntervalRef.current = setInterval(() => {
+         setDuration((prevDuration) => prevDuration + 1);
+      }, 1000);
+
+      return () => clearInterval(durationIntervalRef.current);
+   }, []);
+
+   useEffect(() => {
+      const newTotalSets = exercises.reduce(
+         (total, exercise) => total + exercise.sets.length,
+         0
+      );
+      setTotalSets(newTotalSets);
+
+      const newTotalVolume = exercises.reduce((total, exercise) => {
+         return (
+            total +
+            exercise.sets.reduce(
+               (exerciseTotal, set) => exerciseTotal + set.weight * set.reps,
+               0
+            )
+         );
+      }, 0);
+      setTotalVolume(newTotalVolume);
+   }, [exercises]);
+
+   useEffect(() => {
+      const fetchRoutine = async () => {
+         try {
+            const fetchedRoutine = await readData("routines", routineId);
+            if (fetchedRoutine) {
+               setRoutine(fetchedRoutine);
+               setExercises(fetchedRoutine.exercises || []);
+            } else {
+               setError("Routine not found");
+            }
+         } catch (err) {
+            console.error("Error fetching routine:", err);
+            setError("Error fetching routine data");
+         }
+      };
+
+      fetchRoutine();
+   }, [routineId]);
+
+   useEffect(() => {
+      // Fetch available exercises when component mounts
+      const fetchExercises = async () => {
+         const exerciseData = await fetchData(
+            "https://exercisedb.p.rapidapi.com/exercises?limit=0&offset=0",
+            exerciseOptions
+         );
+         setAvailableExercises(exerciseData);
+      };
+      fetchExercises();
+   }, []);
+
+   useEffect(() => {
+      // Filter exercises based on search term
+      const filtered = availableExercises.filter((exercise) =>
+         exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredExercises(filtered);
+   }, [searchTerm, availableExercises]);
+
+   const formatTime = (seconds) => {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+         .toString()
+         .padStart(2, "0")}`;
+   };
+
+   const handleStartTimer = () => {
+      setIsTimerRunning(true);
+      timerIntervalRef.current = setInterval(() => {
+         setRestTime((prevTime) => {
+            if (prevTime <= 0) {
+               clearInterval(timerIntervalRef.current);
+               setIsTimerRunning(false);
+               return 0;
+            }
+            return prevTime - 1;
+         });
+      }, 1000);
+   };
+
+   const handleStopTimer = () => {
+      clearInterval(timerIntervalRef.current);
+      setIsTimerRunning(false);
+   };
+
+   const handleResetTimer = () => {
+      clearInterval(timerIntervalRef.current);
+      setIsTimerRunning(false);
+      setRestTime(0);
+   };
+
+   const handleIncrementTimer = () => {
+      setRestTime((prevTime) => prevTime + 15);
+   };
+
+   const handleDecrementTimer = () => {
+      setRestTime((prevTime) => Math.max(0, prevTime - 15));
+   };
+
+   const handleAddExercise = (exercise) => {
+      setExercises([
+         ...exercises,
+         { ...exercise, sets: [{ weight: 0, reps: 0 }] },
+      ]);
+      setIsDrawerOpen(false);
+   };
+
+   const handleExerciseChange = (exerciseIndex, setIndex, field, value) => {
+      const newExercises = [...exercises];
+      newExercises[exerciseIndex].sets[setIndex][field] = value;
+      setExercises(newExercises);
+   };
+
+   const handleAddSet = (exerciseIndex) => {
+      const newExercises = [...exercises];
+      newExercises[exerciseIndex].sets.push({ weight: 0, reps: 0 });
+      setExercises(newExercises);
+   };
+
+   const handleRemoveSet = (exerciseIndex, setIndex) => {
+      const newExercises = [...exercises];
+      newExercises[exerciseIndex].sets.splice(setIndex, 1);
+      setExercises(newExercises);
+   };
+
+   const handleDeleteExercise = (exerciseIndex) => {
+      setExercises((prevExercises) =>
+         prevExercises.filter((_, index) => index !== exerciseIndex)
+      );
+   };
+
+   const handleFinishWorkout = async () => {
+      try {
+         const updatedRoutine = { ...routine, exercises: exercises };
+         await updateData("routines", routineId, updatedRoutine);
+         console.log("Workout finished and saved successfully");
+         navigate("/workouts");
+      } catch (error) {
+         console.error("Error saving workout:", error);
+      }
+   };
+
+   if (error) {
+      return <div className="p-6">Error: {error}</div>;
+   }
+
+   if (!routine) {
+      return <div className="p-6">Loading...</div>;
+   }
+
    return (
       <>
          {/* Top Bar */}
-         <div className="z-10 flex flex-col fixed top-0 left-0 right-0 h-40 w-full bg-custom-accent rounded-b-lg p-6 outershadow">
-            <h1 className="mfont1">PUSH</h1>
+         <div className="z-10 flex flex-col fixed top-0 left-0 right-0 h-auto w-full bg-custom-accent rounded-b-lg p-6 outershadow">
+            <h1 className="mfont1">{routine.name}</h1>
+            <div className="flex flex-row justify-between pt-2 gap-3">
+               <div>
+                  <p>Duration: {formatTime(duration)}</p>
+               </div>
+               <div>
+                  <p>Sets: {totalSets}</p>
+               </div>
+               <div>
+                  <p>Volume: {totalVolume}</p>
+               </div>
+            </div>
             <div className="flex flex-row justify-between h-16 pt-2 mfont4 gap-3">
-               <Button className="lightbutton h-full w-1/3">
-                  <div className="flex flex-row justify-center items-center gap-1 ">
-                     <IoIosAddCircleOutline className="h-8 w-8" />
-                     <p>Add</p>
-                  </div>
-               </Button>
+               <Dialog
+                  open={isTimerDialogOpen}
+                  onOpenChange={setIsTimerDialogOpen}
+               >
+                  <DialogTrigger asChild>
+                     <Button className="lightbutton h-full w-1/2">
+                        <div className="flex flex-row justify-center items-center p-2 gap-1 ">
+                           <IoTimeOutline className="h-8 w-8" />
+                           <p>Timer</p>
+                        </div>
+                     </Button>
+                  </DialogTrigger>
+                  <DialogContent className="lightbox h-auto w-[60%]">
+                     <DialogHeader>
+                        <DialogTitle className="mfont4">Rest Timer</DialogTitle>
+                     </DialogHeader>
+                     <div className="flex flex-col items-center gap-4">
+                        <div className="mfont15">{formatTime(restTime)}</div>
+                        <div className="flex gap-4">
+                           <Button
+                              onClick={handleDecrementTimer}
+                              disabled={isTimerRunning}
+                              className="mfont3"
+                           >
+                              <FiMinus />
+                           </Button>
+                           <Button
+                              onClick={handleIncrementTimer}
+                              disabled={isTimerRunning}
+                              className="mfont3"
+                           >
+                              <FiPlus />
+                           </Button>
+                        </div>
+                        <div className="flex gap-4">
+                           {isTimerRunning ? (
+                              <Button onClick={handleStopTimer}>Stop</Button>
+                           ) : (
+                              <Button
+                                 className="accentbutton mfont45"
+                                 onClick={handleStartTimer}
+                              >
+                                 Start
+                              </Button>
+                           )}
+                           <Button
+                              className="graybutton mfont4"
+                              onClick={handleResetTimer}
+                           >
+                              Reset
+                           </Button>
+                        </div>
+                     </div>
+                  </DialogContent>
+               </Dialog>
 
-               <Button className="lightbutton h-full w-1/3">
-                  <div className="flex flex-row justify-center items-center p-2 gap-1 ">
-                     <IoTimeOutline className="h-8 w-8" />
-                     <p>Timer</p>
-                  </div>
-               </Button>
-
-               <Button className="lightbutton h-full w-1/3">
+               <Button
+                  onClick={handleFinishWorkout}
+                  className="lightbutton h-full w-1/2"
+               >
                   <div className="flex flex-row justify-center items-center p-2 gap-1 ">
                      <IoMdCheckmarkCircleOutline className="h-8 w-8" />
                      <p>Finish</p>
@@ -35,318 +292,141 @@ const SessionPage = () => {
          </div>
 
          {/* Content */}
-         <div className="p-6 pt-44  h-full ">
-            {/* Movement */}
-            <div className="h-76 p-3 lightbox mt-3">
-               {/* Name */}
-               <div className="flex flex-row gap-3 items-center">
-                  <div className="h-11 w-11 accentbox2"></div>
-                  <h1 className="mfont29">BENCHPRESS</h1>
+         <div className="p-6 pt-64">
+            {exercises.map((exercise, exerciseIndex) => (
+               <div
+                  key={exerciseIndex}
+                  className="flex flex-col lightbox p-3 mb-4"
+               >
+                  <div className="flex flex-row gap-2 items-center mb-4">
+                     <img
+                        className="w-16 h-16 rounded-full"
+                        src={exercise.gifUrl}
+                        alt={exercise.name}
+                        loading="lazy"
+                     />
+                     <div className="flex flex-col gap-1">
+                        <p className="mfont2">{exercise.name}</p>
+                        <div className="mfont5">
+                           <Button className="accent rounded-sm py-1 px-2 h-auto w-auto">
+                              <p className="mfont55 whitespace-normal break-words">
+                                 {exercise.bodyPart}
+                                 {" > "}
+                                 {exercise.target}
+                              </p>
+                           </Button>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-2 mb-2">
+                     <div className="text-center mfont4b">Set</div>
+                     <div className="text-left mfont4b">Weight</div>
+                     <div className="text-left mfont4b">Reps</div>
+                     <div></div>
+                  </div>
+
+                  {exercise.sets.map((set, setIndex) => (
+                     <div
+                        key={setIndex}
+                        className="grid grid-cols-4 gap-2 mb-2 items-center"
+                     >
+                        <div className="text-center mfont4b">
+                           {setIndex + 1}
+                        </div>
+                        <Input
+                           type="number"
+                           value={set.weight}
+                           onChange={(e) =>
+                              handleExerciseChange(
+                                 exerciseIndex,
+                                 setIndex,
+                                 "weight",
+                                 parseInt(e.target.value)
+                              )
+                           }
+                           placeholder="Weight"
+                           className="rounded-sm pl-2 w-3/4 border-neutral-300"
+                        />
+                        <Input
+                           type="number"
+                           value={set.reps}
+                           onChange={(e) =>
+                              handleExerciseChange(
+                                 exerciseIndex,
+                                 setIndex,
+                                 "reps",
+                                 parseInt(e.target.value)
+                              )
+                           }
+                           placeholder="Reps"
+                           className="rounded-sm pl-2 w-3/4 border-neutral-300"
+                        />
+                        <div className="ml-6 h-full">
+                           <Button
+                              onClick={() =>
+                                 handleRemoveSet(exerciseIndex, setIndex)
+                              }
+                              className="p-1 h-full w-10 transition-colors duration-200 ease-in-out hover:bg-custom-accent "
+                              variant="destructive"
+                           >
+                              <FaRegTrashAlt className="w-5 h-5" />
+                           </Button>
+                        </div>
+                     </div>
+                  ))}
+                  <div className="flex flex-row gap-2 mt-2">
+                     <Button
+                        onClick={() => handleAddSet(exerciseIndex)}
+                        className=" w-full accentbutton"
+                     >
+                        Add Set
+                     </Button>
+                     <Button
+                        onClick={() => handleDeleteExercise(exerciseIndex)}
+                        className="graybutton"
+                     >
+                        Delete Exercise
+                     </Button>
+                  </div>
                </div>
-               {/* Label */}
-               <div className="flex flex-row mt-3 ml-3 w-9/12 justify-between mfont39">
-                  <p>Set</p>
-                  <p className="relative right-5">Previous</p>
-                  <p>LBS</p>
-                  <p>Reps</p>
-               </div>
-               {/* Sets */}
-               <div className="flex flex-col mt-1 ml-2">
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3 ">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
+            ))}
 
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3 ">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3 ">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-               </div>
-               {/* Add Set */}
-               <div className="pt-3">
-                  <Button className="accentbutton w-full">
-                     <p className="mfont35">Add Set</p>
+            <Drawer
+               open={isDrawerOpen}
+               onOpenChange={setIsDrawerOpen}
+               className="accent"
+            >
+               <DrawerTrigger asChild>
+                  <Button className="accentbutton w-full h-12 mt-2">
+                     Add Exercise
                   </Button>
-               </div>
-            </div>
-
-            {/* Movement */}
-            <div className="h-76 p-3 lightbox mt-3">
-               {/* Name */}
-               <div className="flex flex-row gap-3 items-center">
-                  <div className="h-11 w-11 accentbox2"></div>
-                  <h1 className="mfont29">BENCHPRESS</h1>
-               </div>
-               {/* Label */}
-               <div className="flex flex-row mt-3 ml-3 w-9/12 justify-between mfont39">
-                  <p>Set</p>
-                  <p className="relative right-5">Previous</p>
-                  <p>LBS</p>
-                  <p>Reps</p>
-               </div>
-               {/* Sets */}
-               <div className="flex flex-col mt-1 ml-2">
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3 ">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
+               </DrawerTrigger>
+               <DrawerContent className="h-[80vh] p-6 accent border-none rounded-t-lg">
+                  <DrawerHeader className="mfont45 p-0 pb-6">
+                     <DrawerTitle></DrawerTitle>
+                     <DrawerDescription></DrawerDescription>
+                     <Input
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search exercises..."
+                        className="rounded-sm"
+                     />
+                  </DrawerHeader>
+                  <div className=" overflow-y-auto">
+                     <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                        {filteredExercises.map((exercise, index) => (
+                           <ExerciseCard
+                              key={`${exercise.id}-${index}`}
+                              exercise={exercise}
+                              onClick={() => handleAddExercise(exercise)}
+                              noClick={true}
+                           />
+                        ))}
                      </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
                   </div>
-
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3 ">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3 ">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-               </div>
-               {/* Add Set */}
-               <div className="pt-3">
-                  <Button className="accentbutton w-full">
-                     <p className="mfont35">Add Set</p>
-                  </Button>
-               </div>
-            </div>
-
-            {/* Movement */}
-            <div className="h-76 p-3 lightbox mt-3">
-               {/* Name */}
-               <div className="flex flex-row gap-3 items-center">
-                  <div className="h-11 w-11 accentbox2"></div>
-                  <h1 className="mfont29">BENCHPRESS</h1>
-               </div>
-               {/* Label */}
-               <div className="flex flex-row mt-3 ml-3 w-9/12 justify-between mfont39">
-                  <p>Set</p>
-                  <p className="relative right-5">Previous</p>
-                  <p>LBS</p>
-                  <p>Reps</p>
-               </div>
-               {/* Sets */}
-               <div className="flex flex-col mt-1 ml-2">
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3 ">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3 ">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3 ">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-
-                  {/* Set */}
-                  <div className="flex flex-row mt-1 justify-between mfont3">
-                     <div className="flex flex-row justify-between w-10/12 h-8">
-                        <div className="flex flex-col justify-center items-center w-6 ">
-                           <p>1</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-2 w-20">
-                           <p>120LBS X10</p>
-                        </div>
-                        <div className="flex flex-col justify-center relative right-1 w-10">
-                           <p>120</p>
-                        </div>
-                        <div className=" flex flex-col justify-center relative right-2 w-10">
-                           <p>12</p>
-                        </div>
-                     </div>
-
-                     <Button className="graybutton h-8 w-8"></Button>
-                  </div>
-               </div>
-               {/* Add Set */}
-               <div className="pt-3">
-                  <Button className="accentbutton w-full">
-                     <p className="mfont35">Add Set</p>
-                  </Button>
-               </div>
-            </div>
+               </DrawerContent>
+            </Drawer>
          </div>
       </>
    );

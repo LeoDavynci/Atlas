@@ -53,7 +53,7 @@ const WorkoutsPage = () => {
 
    const handleBeginWorkout = (routine) => {
       // Navigate to workout page or start workout
-      navigate(`/start-workout/${routine.id}`);
+      navigate(`/session/${routine.id}`);
    };
 
    return (
@@ -78,9 +78,11 @@ const WorkoutsPage = () => {
                   key={routine.id}
                   className="flex-col w-full h-auto light rounded-md mt-4 p-3 pt-4"
                >
-                  <h1 className="mfont2">{routine.name}</h1>
+                  <h1 className="mfont2">{routine.name || "Unnamed"} </h1>
                   <p className="mfont49 mt-2">
-                     {routine.exercises.map((ex) => ex.name).join(", ")}
+                     {routine.exercises && routine.exercises.length > 0
+                        ? routine.exercises.map((ex) => ex.name).join(", ")
+                        : "No exercises"}
                   </p>
                   <div className="mt-2 flex gap-2">
                      <Button

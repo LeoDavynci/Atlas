@@ -35,19 +35,25 @@ export const createData = async (collectionName, data) => {
     }
 };
   
-export const readData = async (collection, id) => {
-    try {
-      const docRef = doc(db, collection, id);
+export const readData = async (collectionName, id) => {
+  if (!id) {
+      throw new Error("No document ID provided");
+  }
+
+  try {
+      const docRef = doc(db, collectionName, id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-        return docSnap.data();
+          // console.log("Document data:", docSnap.data());
+          return docSnap.data();
       } else {
-        console.log("No such document!");
+          console.log("No such document!");
+          return null;
       }
-    } catch (error) {
+  } catch (error) {
       console.error("Error reading document: ", error.message);
-    }
+      throw error;
+  }
 };
   
 export const updateData = async (collectionName, id, data) => {
