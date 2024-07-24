@@ -69,7 +69,18 @@ const SessionPage = () => {
    const timerIntervalRef = useRef(null);
    const durationIntervalRef = useRef(null);
    const [deleteConfirmationIndex, setDeleteConfirmationIndex] = useState(null);
+   const [currentPage, setCurrentPage] = useState(1);
+   const [exercisesPerPage] = useState(20);
 
+   const indexOfLastExercise = currentPage * exercisesPerPage;
+   const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
+   const currentExercises = filteredExercises.slice(
+      indexOfFirstExercise,
+      indexOfLastExercise
+   );
+   const totalPages = Math.ceil(filteredExercises.length / exercisesPerPage);
+
+   const paginate = (pageNumber) => setCurrentPage(pageNumber);
    const [loading, setLoading] = useState(true);
 
    useEffect(() => {
@@ -229,16 +240,33 @@ const SessionPage = () => {
       setExercises(newExercises);
    };
 
-   const handleDiscard = () => {
+   const updateRoutineInDatabase = async (updatedExercises) => {
+      try {
+         const updatedRoutine = { ...routine, exercises: updatedExercises };
+         await updateData("routines", routineId, updatedRoutine);
+         console.log("Routine updated successfully");
+      } catch (error) {
+         console.error("Error updating routine:", error);
+      }
+   };
+
+   const handleDiscard = async () => {
+      const resetExercises = exercises.map((exercise) => ({
+         ...exercise,
+         sets: exercise.sets.map((set) => ({
+            ...set,
+            completed: false,
+         })),
+      }));
+
+      setExercises(resetExercises);
+      await updateRoutineInDatabase(resetExercises);
       navigate("/workouts");
    };
 
    const handleFinishWorkout = async () => {
       try {
-         const updatedRoutine = { ...routine, exercises: exercises };
-         await updateData("routines", routineId, updatedRoutine);
-         console.log("Workout finished and saved successfully");
-
+         // Log the current workout first
          const loggedExercises = exercises.map((exercise) => {
             const completeSets = exercise.sets.filter(
                (set) => set.weight > 0 && set.reps > 0
@@ -250,14 +278,6 @@ const SessionPage = () => {
 
             return {
                name: exercise.name,
-               // bodyPart: exercise.bodyPart,
-               // target: exercise.target,
-               // sets: exercise.sets.map((set) => {
-               //    return {
-               //       weight: set.weight,
-               //       reps: set.reps,
-               //    };
-               // }),
                gifUrl: exercise.gifUrl,
                completeSets: completeSets,
                totalReps: totalReps,
@@ -278,16 +298,28 @@ const SessionPage = () => {
             volume: totalVolume,
          };
 
-         try {
-            await createData("saves", finishedData);
-            console.log("Workout logged successfully");
-         } catch (error) {
-            console.error("Error saving workout:", error);
-         }
+         // Save the workout log
+         await createData("saves", finishedData);
+         // console.log("Workout logged successfully");
 
+         // Reset the exercises (clear completed status)
+         const resetExercises = exercises.map((exercise) => ({
+            ...exercise,
+            sets: exercise.sets.map((set) => ({
+               ...set,
+               completed: false,
+            })),
+         }));
+
+         // Update the routine in the database with reset exercises
+         const updatedRoutine = { ...routine, exercises: resetExercises };
+         await updateData("routines", routineId, updatedRoutine);
+         // console.log("Routine reset successfully");
+
+         // Navigate back to workouts page
          navigate("/workouts");
       } catch (error) {
-         console.error("Error saving workout:", error);
+         console.error("Error finishing workout:", error);
       }
    };
 
@@ -537,53 +569,66 @@ const SessionPage = () => {
                </div>
             ))}
 
-            <DrawerContent className="h-[80vh] p-6 accent border-none rounded-t-lg">
-               <DrawerHeader className="mfont45 p-0 pb-6">
-                  <DrawerTitle></DrawerTitle>
-                  <DrawerDescription></DrawerDescription>
-                  <Input
-                     value={searchTerm}
-                     onChange={(e) => setSearchTerm(e.target.value)}
-                     placeholder="Search exercises..."
-                     className="rounded-sm"
-                  />
-               </DrawerHeader>
-               {loading ? (
-                  <div>Loading...</div>
-               ) : (
-                  <div className="overflow-y-auto">
-                     <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
-                        {currentExercises.map((exercise, index) => (
-                           <ExerciseCard
-                              key={`${exercise.id}-${index}`}
-                              exercise={exercise}
-                              onClick={() => handleAddExercise(exercise)}
-                              noClick={true}
-                           />
-                        ))}
+            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+               <DrawerTrigger asChild>
+                  <Button
+                     onClick={() => setIsDrawerOpen(true)}
+                     className="lightbutton h-full w-full"
+                  >
+                     <div className="flex flex-row justify-center items-center p-2 gap-1 ">
+                        <IoIosAddCircleOutline className="h-6 w-6" />
+                        <p>Add Exercise</p>
                      </div>
-                     <div className="flex justify-center mt-4 gap-4 items-center">
-                        <Button
-                           onClick={() => paginate(currentPage - 1)}
-                           disabled={currentPage === 1}
-                           className="light rounded-sm"
-                        >
-                           ←
-                        </Button>
-                        <span className="mfont35">
-                           Page {currentPage} of {totalPages}
-                        </span>
-                        <Button
-                           onClick={() => paginate(currentPage + 1)}
-                           disabled={currentPage === totalPages}
-                           className="light rounded-sm"
-                        >
-                           →
-                        </Button>
+                  </Button>
+               </DrawerTrigger>
+               <DrawerContent className="h-[80vh] p-6 accent border-none rounded-t-lg">
+                  <DrawerHeader className="mfont45 p-0 pb-6">
+                     <DrawerTitle></DrawerTitle>
+                     <DrawerDescription></DrawerDescription>
+                     <Input
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search exercises..."
+                        className="rounded-sm"
+                     />
+                  </DrawerHeader>
+                  {loading ? (
+                     <div>Loading...</div>
+                  ) : (
+                     <div className="overflow-y-auto">
+                        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                           {currentExercises.map((exercise, index) => (
+                              <ExerciseCard
+                                 key={`${exercise.id}-${index}`}
+                                 exercise={exercise}
+                                 onClick={() => handleAddExercise(exercise)}
+                                 noClick={true}
+                              />
+                           ))}
+                        </div>
+                        <div className="flex justify-center mt-4 gap-4 items-center">
+                           <Button
+                              onClick={() => paginate(currentPage - 1)}
+                              disabled={currentPage === 1}
+                              className="light rounded-sm"
+                           >
+                              ←
+                           </Button>
+                           <span className="mfont35">
+                              Page {currentPage} of {totalPages}
+                           </span>
+                           <Button
+                              onClick={() => paginate(currentPage + 1)}
+                              disabled={currentPage === totalPages}
+                              className="light rounded-sm"
+                           >
+                              →
+                           </Button>
+                        </div>
                      </div>
-                  </div>
-               )}
-            </DrawerContent>
+                  )}
+               </DrawerContent>
+            </Drawer>
          </div>
       </>
    );
