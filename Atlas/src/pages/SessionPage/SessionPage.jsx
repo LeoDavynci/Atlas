@@ -70,7 +70,7 @@ const SessionPage = () => {
    const durationIntervalRef = useRef(null);
    const [deleteConfirmationIndex, setDeleteConfirmationIndex] = useState(null);
    const [currentPage, setCurrentPage] = useState(1);
-   const [exercisesPerPage] = useState(20);
+   const [exercisesPerPage] = useState(12);
 
    const indexOfLastExercise = currentPage * exercisesPerPage;
    const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;

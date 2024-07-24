@@ -24,7 +24,7 @@ const NewRoutinePage = () => {
    const [filteredExercises, setFilteredExercises] = useState([]);
    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
    const [currentPage, setCurrentPage] = useState(1);
-   const [exercisesPerPage] = useState(24);
+   const [exercisesPerPage] = useState(12);
    const [loading, setLoading] = useState(true);
    const navigate = useNavigate();
    const { user } = UserAuth();

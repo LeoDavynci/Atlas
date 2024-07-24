@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 
 const Exercises = ({ exercises, setExercises, bodyPart, equipment }) => {
    const [currentPage, setCurrentPage] = useState(1);
-   const [exercisesPerPage] = useState(24);
+   const [exercisesPerPage] = useState(12);
    const [loading, setLoading] = useState(true);
    const [filteredExercises, setFilteredExercises] = useState([]);
 
