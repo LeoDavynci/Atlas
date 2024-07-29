@@ -4,7 +4,12 @@ import { useLocation } from "react-router-dom";
 const PageLayout = ({ children }) => {
    const { pathname } = useLocation();
    const isAuthPage =
-      pathname === "/login" || pathname === "/signup" || pathname === "/";
+      pathname === "/login" ||
+      pathname === "/signup" ||
+      pathname === "/" ||
+      pathname === "/new-routine" ||
+      pathname.startsWith("/session/") ||
+      pathname.startsWith("/exercises/exercise/");
 
    return (
       <div className={`flex flex-col min-h-screen`}>

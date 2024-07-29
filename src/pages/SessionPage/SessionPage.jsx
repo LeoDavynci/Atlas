@@ -336,7 +336,7 @@ const SessionPage = () => {
          {/* Top Bar */}
          <div className="z-10 flex flex-col fixed top-0 left-0 right-0 h-auto w-full bg-custom-accent rounded-b-lg p-6 outershadow">
             <h1 className="mfont1">{routine.name}</h1>
-            <div className="flex flex-row justify-between pt-2 gap-3">
+            <div className="flex flex-row justify-between pt-2 gap-3 mfont45">
                <div>
                   <p>Duration: {formatTime(duration)}</p>
                </div>
